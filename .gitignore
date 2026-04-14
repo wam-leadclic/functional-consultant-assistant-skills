@@ -1,0 +1,13 @@
+# Client materials — confidential, never commit
+workshop-resources/
+
+# macOS
+.DS_Store
+
+# Environment and secrets
+.env
+.env.*
+
+# Editor
+.vscode/
+.idea/
