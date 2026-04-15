@@ -83,7 +83,7 @@ Publishes to Confluence: `2. Solution Design / Scope Register`.
 
 **Phase 1. Generates the workshop guide from commercial materials.**
 
-Reads proposals, SOWs, RFPs, and pre-sales documents from `workshop-resources/commercial/`. Identifies which Salesforce functional areas are in scope, extracts known facts and hypotheses, and produces a structured workshop guide with:
+Reads proposals, SOWs, RFPs, and pre-sales documents from `resources/commercial/`. Identifies which Salesforce functional areas are in scope, extracts known facts and hypotheses, and produces a structured workshop guide with:
 
 - A recommended session plan (max 2–3 functional areas per session)
 - Per-session discovery questions in plain business language (no Salesforce jargon)
@@ -99,7 +99,7 @@ Publishes to Confluence: `1. Discovery / Workshop Guide`.
 
 **Phase 2. Transforms raw workshop output into structured requirements.**
 
-Reads transcripts, session notes, and client-provided materials from `workshop-resources/`. Extracts functional requirements, business rules, non-functional requirements, user profiles, integration requirements, and reporting needs — all with source traceability. Flags ambiguities, contradictions, and gaps as Open FDRs rather than resolving them silently.
+Reads transcripts, session notes, and client-provided materials from `resources/workshops/`. Extracts functional requirements, business rules, non-functional requirements, user profiles, integration requirements, and reporting needs — all with source traceability. Flags ambiguities, contradictions, and gaps as Open FDRs rather than resolving them silently.
 
 Outputs:
 - **Requirements Register** — every requirement with type, priority (MoSCoW), status, and source
@@ -200,21 +200,19 @@ functional-consultant-assistant-agent/
 │   ├── fc-handoff-to-architect/Phase 5 — Architect handoff
 │   ├── fc-uat-generator/       Phase 6 — UAT plan
 │   └── fc-training-materials/  Phase 7 — Training materials
-└── workshop-resources/         Client materials (gitignored)
+└── resources/                  Client materials (gitignored)
     ├── commercial/
-    ├── workshops/
-    └── client-systems/
+    └── workshops/
 ```
 
-Client materials for each project go in `workshop-resources/` at the project root:
+Client materials for each project go in `resources/` at the project root:
 
 ```
-workshop-resources/
+resources/
 ├── commercial/         Proposals, SOW, RFPs, pre-sales materials
-├── workshops/
-│   ├── session-01/     Transcripts, notes, whiteboard photos
-│   └── session-02/
-└── client-systems/     ERP/PMS manuals, DB schemas, API docs, AS-IS diagrams
+└── workshops/
+    ├── session-01/     Transcripts, notes, client system docs, whiteboard photos
+    └── session-02/
 ```
 
 ---

@@ -1,7 +1,7 @@
 ---
 name: fc-workshop-prep
 description: Generates a structured workshop guide from commercial materials (proposals, SOW, scope documents). Organizes discovery questions by Salesforce functional area, identifies hypotheses to validate, and surfaces integration touchpoints to investigate.
-argument-hint: Point to workshop-resources/commercial/ directory with pre-sales materials, or provide a Confluence space key with pre-sales documentation.
+argument-hint: Point to resources/commercial/ directory with pre-sales materials, or provide a Confluence space key with pre-sales documentation.
 tools:
   - Atlassian
 ---
@@ -18,7 +18,7 @@ Discovery is expensive time. Walking into a session without a structured plan wa
 
 ## Inputs
 
-- `workshop-resources/commercial/` — proposals, SOW, RFPs, email summaries, audit documents, previous Salesforce assessments
+- `resources/commercial/` — proposals, SOW, RFPs, email summaries, audit documents, previous Salesforce assessments
 - OR Confluence space/page with pre-sales documentation
 
 If both are available, use both. Commercial materials take precedence over memory or assumptions.

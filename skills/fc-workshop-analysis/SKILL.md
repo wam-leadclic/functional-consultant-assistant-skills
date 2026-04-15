@@ -1,7 +1,7 @@
 ---
 name: fc-workshop-analysis
 description: Analyzes all workshop materials (transcripts, documents, process diagrams, client system documentation) to produce a structured Requirements Register and Open FDRs. Primary analysis step before solution design begins. Can run incrementally after each session or once after all workshops.
-argument-hint: Point to workshop-resources/ directory or a specific session folder. Run after each session for incremental analysis, or after all sessions for full analysis.
+argument-hint: Point to resources/workshops/ directory or a specific session folder. Run after each session for incremental analysis, or after all sessions for full analysis.
 tools:
   - Atlassian
 ---
@@ -18,9 +18,8 @@ Can run incrementally after each session (recommended) or once after all worksho
 
 ## Inputs
 
-- `workshop-resources/workshops/` — transcripts (txt, docx, pdf), session notes, whiteboard photos
-- `workshop-resources/client-systems/` — ERP/PMS manuals, database schemas, API documentation, AS-IS process diagrams, org charts
-- `workshop-resources/commercial/` — for scope validation cross-reference
+- `resources/workshops/` — transcripts (txt, docx, pdf), session notes, whiteboard photos, client system docs (ERP/PMS manuals, DB schemas, API docs, AS-IS diagrams)
+- `resources/commercial/` — for scope validation cross-reference
 - Workshop Guide (Confluence) — cross-check planned topics vs. what was actually covered
 
 Use all available materials. Do not skip client system documentation — it frequently contains business rules and data structures that were not verbalized in workshops.

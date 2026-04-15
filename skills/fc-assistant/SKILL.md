@@ -17,20 +17,39 @@ Main orchestrator for WAM Global's Salesforce functional consulting engagements.
 
 Run these checks before any work begins. Do not proceed until all items are resolved.
 
-| Check | What to verify | If missing |
+### Step 1 — Read CLAUDE.md
+
+Read `CLAUDE.md` from the project root. It contains all project-specific configuration. Verify the following fields are filled in (not placeholder values):
+
+| Field | CLAUDE.md key | Required for |
 |---|---|---|
-| Atlassian connection | Confluence base URL, space key, Jira project key | Ask the consultant to provide them |
-| Project name | A canonical project name for all artifacts | Ask the consultant |
-| `workshop-resources/` directory | Must exist in the working directory | Instruct: `mkdir -p workshop-resources/commercial workshop-resources/workshop-notes` |
-| Confluence artifacts | Pages present in the project space | Query Confluence to determine current phase |
+| Project name | `Project name` | All phases |
+| Client name | `Client` | All phases |
+| Confluence base URL | `Base URL` | All phases |
+| Confluence space key | `Space key` | All phases |
+| Confluence project root page ID | `Project root page ID` | All phases |
+| Jira project key | `Project key` | Phases 3–7 |
+| GitHub repository | `Repository` | Phase 6 (UAT) only |
 
-If Confluence credentials are not yet configured, stop and prompt:
+If `CLAUDE.md` is missing or any required field still contains a placeholder value (`[...]`), stop and report exactly which fields need to be filled in. Do not ask for all values interactively — point the consultant to `CLAUDE.md` to complete the configuration.
 
-> Provide the following before we proceed:
-> 1. Confluence base URL (e.g. `https://yourorg.atlassian.net/wiki`)
-> 2. Confluence space key
-> 3. Jira project key
-> 4. Project name
+Example blocker message:
+> `CLAUDE.md` is missing the following required fields:
+> - `Space key` — Confluence space key for this project
+> - `Project root page ID` — ID of the Confluence page under which all project pages will be created (find it in the page URL: `.../pages/[ID]/...`)
+>
+> Fill these in `CLAUDE.md` and run again.
+
+### Step 2 — Verify resources/
+
+Check that `resources/commercial/` and `resources/workshops/` exist in the working directory. If not, instruct:
+```
+mkdir -p resources/commercial resources/workshops
+```
+
+### Step 3 — Detect current phase
+
+Query Confluence using the space key and root page ID from `CLAUDE.md` to determine which project pages already exist. Use the Phase Detection Logic below.
 
 ---
 
@@ -79,9 +98,12 @@ When detecting phase, report findings explicitly:
 
 ### Mode: new project
 
-1. Run pre-flight checks.
-2. Collect: project name, client name, Confluence space key, Jira project key.
-3. Create the following Confluence page hierarchy (parent → children):
+1. Run pre-flight checks (reads project name, client, and Confluence coordinates from `CLAUDE.md`).
+2. Confirm the configuration read from `CLAUDE.md` before proceeding:
+   > Starting new project **[Project name]** for **[Client]**.
+   > Confluence space: `[Space key]` · Root page: `[Project root page ID]` · Jira: `[Project key]`
+   > Proceed?
+3. Create the following Confluence page hierarchy under the project root page (parent → children):
 
 ```
 [Project Name]
@@ -100,7 +122,7 @@ When detecting phase, report findings explicitly:
 ```
 
 4. Confirm page hierarchy created. Display Confluence links.
-5. Ask: "Do you have commercial materials ready in `workshop-resources/commercial/`?"
+5. Ask: "Do you have commercial materials ready in `resources/commercial/`?"
 6. If yes → invoke fc-workshop-prep. If no → instruct the consultant to add materials and return.
 
 ---
