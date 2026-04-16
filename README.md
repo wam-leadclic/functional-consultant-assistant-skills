@@ -12,6 +12,156 @@ These skills implement that role as a structured, phase-driven process. Each ski
 
 ---
 
+## Setup
+
+Complete these steps once on your machine. You will not need to repeat them for future projects.
+
+---
+
+### Step 1 — Clone this repository
+
+Open the terminal in VSCode (`Terminal → New Terminal`) and run:
+
+```bash
+git clone https://github.com/wamglobal/functional-consultant-assistant-agent.git
+cd functional-consultant-assistant-agent
+```
+
+---
+
+### Step 2 — Install Node.js
+
+Download and install **Node.js LTS** from [nodejs.org](https://nodejs.org). Accept all defaults during installation.
+
+Verify it installed correctly:
+
+```bash
+node --version
+```
+
+You should see a version number starting with `v18` or higher. If you see an error, restart VSCode and try again.
+
+---
+
+### Step 3 — Install Claude Code
+
+```bash
+npm install -g @anthropic-ai/claude-code
+```
+
+Verify:
+
+```bash
+claude --version
+```
+
+---
+
+### Step 4 — Connect to Atlassian (Confluence + Jira)
+
+First, check whether the Atlassian MCP server is already configured:
+
+```bash
+claude mcp list
+```
+
+If you see `Atlassian` in the list (even with `Needs authentication`), you are done — skip to Step 5. The browser will ask you to log in the first time the assistant uses it.
+
+If `Atlassian` is **not** in the list, run:
+
+```bash
+claude mcp add --transport http atlassian https://mcp.atlassian.com/v1/mcp
+```
+
+> If you see an error mentioning that the Rovo MCP server is not enabled, contact your Atlassian administrator.
+
+---
+
+### Step 5 — Connect to GitHub *(optional — only needed for the UAT phase)*
+
+**Step 5a — Create your GitHub token**
+
+1. Go to [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new)
+2. Name it `FC Assistant`
+3. Set expiration to 90 days
+4. Under **Repository access**, select the client repository
+5. Under **Repository permissions → Contents**, choose `Read-only`
+6. Click **Generate token** and copy the value — you will only see it once
+
+**Step 5b — Save your token**
+
+Create a new file called `.env` in the project root. In VSCode, right-click the root folder, select **New File**, name it `.env`, and paste this inside:
+
+```
+GITHUB_TOKEN=paste_your_token_here
+```
+
+Replace `paste_your_token_here` with the token you just copied and save the file.
+
+This file is gitignored — its contents will never be uploaded to GitHub.
+
+**Step 5c — Register the token with Claude Code**
+
+```bash
+source .env && claude mcp add-json github "{\"type\":\"http\",\"url\":\"https://api.githubcopilot.com/mcp\",\"headers\":{\"Authorization\":\"Bearer $GITHUB_TOKEN\"}}"
+```
+
+---
+
+### Step 6 — Verify
+
+```bash
+claude mcp list
+```
+
+You should see `atlassian` in the list (and `github` if you completed Step 5).
+
+---
+
+## Starting a new project engagement
+
+Follow these steps at the beginning of each client engagement.
+
+### 1. Fill in CLAUDE.md
+
+Open `CLAUDE.md` in VSCode and replace every `[...]` placeholder with the actual project details:
+
+| Field | Where to find it |
+|---|---|
+| Project name | Name of the engagement |
+| Client | Client company name |
+| Confluence Base URL | `https://yourorg.atlassian.net/wiki` |
+| Confluence Space key | Visible in the Confluence space URL |
+| Project root page ID | In the Confluence page URL: `.../pages/`**123456**`/...` |
+| Jira Project key | Prefix of all Jira tickets (e.g. `PROJ` in `PROJ-123`) |
+| GitHub Repository | Full URL — only if using the UAT phase |
+
+### 2. Create the resource folders
+
+```bash
+mkdir -p resources/commercial resources/workshops
+```
+
+### 3. Add the commercial materials
+
+Copy the pre-sales documents (proposals, SOW, RFPs) into `resources/commercial/`.
+
+### 4. Start Claude Code
+
+```bash
+claude
+```
+
+Then type:
+
+```
+/fc-assistant new project
+```
+
+The assistant will read `CLAUDE.md`, confirm the configuration, create the Confluence page structure, and guide you from there.
+
+---
+
 ## Engagement Lifecycle
 
 ```

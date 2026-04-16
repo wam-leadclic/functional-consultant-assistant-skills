@@ -1,12 +1,14 @@
 # Client materials — confidential, never commit
 resources/
 
+# Credentials — never commit
+.env
+
+# Claude Code local settings — machine-specific, never commit
+.claude/settings.local.json
+
 # macOS
 .DS_Store
-
-# Environment and secrets
-.env
-.env.*
 
 # Editor
 .vscode/
