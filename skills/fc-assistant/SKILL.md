@@ -4,7 +4,7 @@ description: Main orchestrator for the Salesforce functional consultant engageme
 argument-hint: Start with "new project" to begin from scratch, "resume [project name]" to continue an existing engagement, or describe what you need ("prepare workshops", "design solution", "generate UATs", etc.)
 tools:
   - Atlassian
-  - GitHub
+  - Google Drive
 ---
 
 # FC Assistant
@@ -17,28 +17,28 @@ Main orchestrator for WAM Global's Salesforce functional consulting engagements.
 
 Run these checks before any work begins. Do not proceed until all items are resolved.
 
-### Step 1 — Read CLAUDE.md
+### Step 1 — Read agent-params.md
 
-Read `CLAUDE.md` from the project root. It contains all project-specific configuration. Verify the following fields are filled in (not placeholder values):
+Read `agent-params.md` from the project root. It contains all project-specific configuration. Verify the following fields are filled in (not placeholder values):
 
-| Field | CLAUDE.md key | Required for |
+| Field | agent-params.md key | Required for |
 |---|---|---|
 | Project name | `Project name` | All phases |
 | Client name | `Client` | All phases |
+| Output language | `Output language` | All phases |
+| Has integrations | `Has integrations` | Phase 2 (Integration Map gate) |
 | Confluence base URL | `Base URL` | All phases |
 | Confluence space key | `Space key` | All phases |
 | Confluence project root page ID | `Project root page ID` | All phases |
-| Jira project key | `Project key` | Phases 3–7 |
-| GitHub repository | `Repository` | Phase 6 (UAT) only |
 
-If `CLAUDE.md` is missing or any required field still contains a placeholder value (`[...]`), stop and report exactly which fields need to be filled in. Do not ask for all values interactively — point the consultant to `CLAUDE.md` to complete the configuration.
+If `agent-params.md` is missing or any required field still contains a placeholder value (`[...]`), stop and report exactly which fields need to be filled in. Point the consultant to `agent-params.md` to complete the configuration.
 
 Example blocker message:
-> `CLAUDE.md` is missing the following required fields:
+> `agent-params.md` is missing the following required fields:
 > - `Space key` — Confluence space key for this project
-> - `Project root page ID` — ID of the Confluence page under which all project pages will be created (find it in the page URL: `.../pages/[ID]/...`)
+> - `Output language` — language code for all generated documents (e.g. `es`, `en`)
 >
-> Fill these in `CLAUDE.md` and run again.
+> Fill these in `agent-params.md` and run again.
 
 ### Step 2 — Verify resources/
 
@@ -49,7 +49,7 @@ mkdir -p resources/commercial resources/workshops
 
 ### Step 3 — Detect current phase
 
-Query Confluence using the space key and root page ID from `CLAUDE.md` to determine which project pages already exist. Use the Phase Detection Logic below.
+Query Confluence using the space key and root page ID from `agent-params.md` to determine which project pages already exist. Use the Phase Detection Logic below.
 
 ---
 
@@ -57,14 +57,14 @@ Query Confluence using the space key and root page ID from `CLAUDE.md` to determ
 
 | Phase | Name | Objective | Input Artifacts | Output Artifacts | Skill |
 |---|---|---|---|---|---|
-| 0 | Project Setup | Verify connections, create Confluence structure | None | Confluence page hierarchy | fc-assistant |
-| 1 | Workshop Preparation | Workshop guide from commercial materials | Proposals, SOW, RFP, pre-sales materials | Workshop Guide | fc-workshop-prep |
-| 2 | Workshop Analysis | Requirements Register + FDRs from workshop notes | Workshop Guide, workshop notes | Requirements Register, FDR list | fc-workshop-analysis |
-| 3 | Solution Design | Salesforce solution design + FDR resolution | Requirements Register, FDRs | Solution Overview, Scope Register (updated) | fc-solution-design |
+| 0 | Project Setup | Verify config, create Confluence structure | None | Confluence page hierarchy | fc-assistant |
+| 1 | Workshop Preparation | Workshop guide from commercial and client materials | Commercial materials, client system docs | Workshop Guide | fc-workshop-prep |
+| 2 | Workshop Analysis | Requirements Register + FDRs + Integration Map | Workshop Guide, all workshop materials | Requirements Register, FDR list, Integration Map | fc-workshop-analysis |
+| 3 | Solution Design | Salesforce solution design + FDR resolution | Requirements Register, FDRs, Integration Map | Solution Overview, Scope Register (updated) | fc-solution-design |
 | 4 | Functional Document | Formal sign-off document | Approved Solution Overview, zero Open FDRs | Functional Document (Draft → Signed Off) | fc-functional-document |
-| 5 | Technical Handoff | Handoff package for architect agent | Signed-off Functional Document | Technical Handoff Package | fc-handoff-to-architect |
-| 6 | UAT | Test plan and test cases | Signed-off Functional Document | UAT Plan, test cases | fc-uat-generator |
-| 7 | Training | End-user training materials per profile | Signed-off Functional Document, UAT Plan | Training Materials per user profile | fc-training-materials |
+| 4.5 | UAT Generation | UAT plan and test cases | Signed-off Functional Document | UAT Plan, test cases | fc-uat-generator |
+| 5 | Technical Handoff *(optional)* | Handoff package for architect AI agent | Signed-off FD, Integration Map, Requirements Register, Scope Register | Technical Handoff Package | fc-architect-handoff |
+| 6 | Training | End-user training materials per profile | Signed-off Functional Document, UAT Plan (optional) | Training Materials per user profile | fc-training-materials |
 
 ---
 
@@ -76,14 +76,16 @@ Query Confluence for the following pages. Match the first condition that applies
 |---|---|---|
 | No project pages exist | Phase 0 — not started | Run Phase 0 setup |
 | Workshop Guide exists; no Requirements Register | Phase 1 complete, Phase 2 pending | Invoke fc-workshop-analysis |
-| Requirements Register exists; no Solution Overview | Phase 2 complete, Phase 3 pending | Invoke fc-solution-design |
+| Requirements Register exists; `Has integrations: yes` but no Integration Map | Phase 2 incomplete | Resume fc-workshop-analysis — Integration Map missing |
+| Requirements Register exists; Integration Map present (or `Has integrations: no`); no Solution Overview | Phase 2 complete, Phase 3 pending | Invoke fc-solution-design |
 | Solution Overview exists, status ≠ Approved; no Functional Document | Phase 3 in progress | Resume fc-solution-design |
 | Solution Overview Approved; no Functional Document | Phase 3 complete, Phase 4 pending | Invoke fc-functional-document (after quality gate) |
-| Functional Document exists, status = Draft; no Technical Handoff Package | Phase 4 in progress | Continue Functional Document review |
-| Functional Document signed off; no Technical Handoff Package | Phase 4 complete, Phase 5 pending | Invoke fc-handoff-to-architect |
-| Technical Handoff Package exists; no UAT Plan | Phase 5 complete, Phase 6 pending | Invoke fc-uat-generator |
-| UAT Plan exists; no Training Materials | Phase 6 complete, Phase 7 pending | Invoke fc-training-materials |
+| Functional Document exists, status = Draft | Phase 4 in progress | Continue Functional Document review |
+| Functional Document signed off; no UAT Plan | Phase 4 complete, Phase 4.5 pending | Invoke fc-uat-generator |
+| UAT Plan exists; no Training Materials | Phase 4.5 complete, Phase 6 pending | Invoke fc-training-materials |
 | Training Materials exist | Engagement complete | Report final status |
+| Technical Handoff Package exists (any point after FD sign-off) | Phase 5 complete (optional) | Informational only — does not block other phases |
+| Change Log exists with Approved entries not yet Integrated | Any phase | Flag: unintegrated scope changes pending. Invoke fc-change-log before proceeding. |
 
 When detecting phase, report findings explicitly:
 
@@ -98,10 +100,11 @@ When detecting phase, report findings explicitly:
 
 ### Mode: new project
 
-1. Run pre-flight checks (reads project name, client, and Confluence coordinates from `CLAUDE.md`).
-2. Confirm the configuration read from `CLAUDE.md` before proceeding:
+1. Run pre-flight checks (reads project name, client, and Confluence coordinates from `agent-params.md`).
+2. Confirm the configuration read from `agent-params.md` before proceeding:
    > Starting new project **[Project name]** for **[Client]**.
-   > Confluence space: `[Space key]` · Root page: `[Project root page ID]` · Jira: `[Project key]`
+   > Output language: **[language]** · Confluence space: `[Space key]` · Root page: `[Project root page ID]`
+   > Integrations in scope: **[yes / no]**
    > Proceed?
 3. Create the following Confluence page hierarchy under the project root page (parent → children):
 
@@ -110,19 +113,21 @@ When detecting phase, report findings explicitly:
 ├── 1. Discovery
 │   ├── Workshop Guide
 │   ├── Requirements Register
+│   ├── Integration Map
 │   └── FDRs
 ├── 2. Solution Design
 │   ├── Solution Overview
 │   ├── Scope Register
-│   └── Technical Handoff Package
+│   └── Technical Handoff Package *(generated only if fc-architect-handoff is invoked)*
 └── 3. Project Documentation
     ├── Functional Document
+    ├── Change Log
     ├── UAT Plan
     └── Training Materials
 ```
 
 4. Confirm page hierarchy created. Display Confluence links.
-5. Ask: "Do you have commercial materials ready in `resources/commercial/`?"
+5. Ask: "Do you have commercial materials ready?" (check `resources/commercial/` and configured Google Drive/Confluence sources in agent-params.md)
 6. If yes → invoke fc-workshop-prep. If no → instruct the consultant to add materials and return.
 
 ---
@@ -158,16 +163,33 @@ Produce a status table on request ("status", "where are we", "project summary"):
 |---|---|---|---|---|---|
 | 0 | Project Setup | [Status] | [Date] | Confluence structure | |
 | 1 | Workshop Prep | [Status] | [Date] | Workshop Guide | |
-| 2 | Workshop Analysis | [Status] | [Date] | Requirements Register | |
+| 2 | Workshop Analysis | [Status] | [Date] | Requirements Register + Integration Map | |
 | 3 | Solution Design | [Status] | [Date] | Solution Overview | |
 | 4 | Functional Document | [Status] | [Date] | Functional Document | |
-| 5 | Technical Handoff | [Status] | [Date] | Handoff Package | |
-| 6 | UAT | [Status] | [Date] | UAT Plan | |
-| 7 | Training | [Status] | [Date] | Training Materials | |
+| 4.5 | UAT Generation | [Status] | [Date] | UAT Plan | |
+| 5 | Technical Handoff | [Status] | [Date] | Handoff Package | Optional — N/A if not requested |
+| 6 | Training | [Status] | [Date] | Training Materials | |
+| — | Scope Changes | [N changes] | [Date] | Change Log | Active if any Integrated or Pending entries |
 
 **Status values:** `Not Started` | `In Progress` | `Complete` | `Blocked`
 
 If any phase is Blocked, append a Blockers section listing each blocker with its phase and resolution path.
+
+---
+
+### Mode: scope-change
+
+Used when a change to the signed-off Functional Document is needed. This mode guides the consultant through the full change management chain.
+
+1. **Confirm phase.** Verify that a Functional Document exists and is signed off. If not, a scope change requires updating the Solution Overview and Scope Register instead — redirect to fc-solution-design.
+2. **Create an SCR.** Invoke fc-scope-register in `scope-change-request` mode to document the requested change, assess impact, and obtain approval.
+3. **Wait for SCR approval.** Do not proceed until the SCR is explicitly approved. An unapproved scope change cannot modify any project artifact.
+4. **Register the change.** Once the SCR is approved, invoke fc-change-log in `register-change` mode to assess downstream impact on UATs and training materials.
+5. **Integrate the change.** Invoke fc-change-log in `integrate-change` mode to update the Functional Document, flag affected test cases, and flag affected training modules.
+6. **Update UATs.** Invoke fc-uat-generator in `regenerate [CL-ID]` mode to update the UAT Plan.
+7. **Update training materials.** Invoke fc-training-materials in regeneration mode if any materials were flagged.
+
+Do not skip steps. A scope change that bypasses the SCR → CL chain creates a contract breach.
 
 ---
 
@@ -196,9 +218,11 @@ The following conditions must stop all work on the affected area:
 | Condition | Impact | Resolution Path |
 |---|---|---|
 | Open FDRs flagged as design blockers | Block Phase 3 progress | Resolve FDRs with client via fc-solution-design |
-| Conflicting requirements unresolved | Block Phase 3 completion | Escalate to client for decision; document outcome as FDR |
+| Conflicting requirements unresolved | Block Phase 3 completion | Escalate to client; document outcome as FDR |
 | Scope items added without Scope Register approval | Block Phase 3 and Phase 4 | Invoke fc-scope-register; obtain approval or remove item |
-| Functional Document not yet signed off | Block Phase 6 and Phase 7 | Complete Phase 4; obtain sign-off before proceeding |
+| Functional Document not yet signed off | Block Phase 4.5 and Phase 6 | Complete Phase 4; obtain sign-off before proceeding |
+| Integration Map missing when `Has integrations: yes` | Block Phase 3 | Complete fc-workshop-analysis — Integration Map required |
+| Approved Change Log entries not yet integrated | Block new UAT sessions and training delivery | Invoke fc-change-log in integrate-change mode |
 
 When a blocking condition is detected, report:
 
@@ -247,15 +271,16 @@ The fc-assistant knows all skills in the system and their roles.
 
 | Skill | Type | Role |
 |---|---|---|
-| fc-fdr-format | Utility | Defines the FDR format. Not invoked directly — used as a reference by all other skills. |
-| fc-scope-register | Utility | Manages the project Scope Register. Invoked whenever scope may be affected. |
-| fc-workshop-prep | Phase 1 | Generates workshop guide from commercial materials. |
-| fc-workshop-analysis | Phase 2 | Analyzes workshop materials; produces Requirements Register and FDRs. |
-| fc-solution-design | Phase 3 | Designs the Salesforce solution; resolves FDRs one by one. |
+| fc-fdr-format | Utility | Defines the FDR format. Not invoked directly — reference for all other skills. |
+| fc-scope-register | Utility | Manages the Scope Register. Invoked whenever scope may be affected. |
+| fc-change-log | Utility | Registers and manages changes to the Functional Document post-sign-off. |
+| fc-workshop-prep | Phase 1 | Generates workshop guide from commercial and client materials. |
+| fc-workshop-analysis | Phase 2 | Analyzes workshop materials; produces Requirements Register, FDRs, and Integration Map. |
+| fc-solution-design | Phase 3 | Designs the Salesforce solution; resolves FDRs. |
 | fc-functional-document | Phase 4 | Generates the formal Functional Document for client sign-off. |
-| fc-handoff-to-architect | Phase 5 | Generates the technical handoff package for the architect agent. |
-| fc-uat-generator | Phase 6 | Generates UAT plan and test cases. |
-| fc-training-materials | Phase 7 | Generates training materials per user profile. |
+| fc-uat-generator | Phase 4.5 | Generates UAT plan and test cases from the signed-off Functional Document. |
+| fc-architect-handoff | Phase 5 *(optional)* | Generates a machine-readable technical handoff package for the architect AI agent. |
+| fc-training-materials | Phase 6 | Generates training materials per user profile. |
 
 When invoking a skill, state:
 > Invoking **[skill name]** — [one-sentence reason].
@@ -265,7 +290,7 @@ When invoking a skill, state:
 ## Interaction Rules
 
 - **One action at a time.** Never propose multiple parallel actions. Present one recommendation and wait.
-- **Always confirm before writing.** Any action that creates or modifies a Confluence page or Jira item requires explicit confirmation from the consultant.
+- **Always confirm before writing.** Any action that creates or modifies a Confluence page requires explicit confirmation from the consultant.
 - **Be specific when blocked.** "Prerequisites not met" is not acceptable. State exactly what is missing, where it should be, and how to resolve it.
 - **Status reports are concise.** One line per phase in the status table. Expand only if asked.
 - **Never assume.** If a project detail is not present in an artifact, ask. Do not infer client intent, scope boundaries, or technical decisions from incomplete information.
