@@ -24,6 +24,7 @@ Once signed, it is the binding reference for scope disputes. Sections 3.2 and 11
 
 Run all checks before generating anything. If any check fails: **stop**, list what needs to be resolved, and do not begin document generation.
 
+- [ ] `agent-params.md` is present and `Output language` field is set. All document content will be generated in that language.
 - [ ] Solution Overview exists in Confluence (2. Solution Design / Solution Overview) and status = **Approved**
 - [ ] Zero Open FDRs remaining
 - [ ] Scope Register is current and agreed
@@ -42,7 +43,7 @@ Generate the complete Functional Document using this structure. Every section is
 ```markdown
 # Functional Document — [Project Name]
 Version: 1.0 | Date: [date] | Status: Draft for Client Review
-Prepared by: WAM Global | Client: [Client Name]
+Prepared by: WAM Global | Client: [Client Name] | Language: [language code from agent-params.md]
 
 ---
 
@@ -228,8 +229,12 @@ These rules are mandatory. Deviation degrades the document's contractual and com
 
 - Publish to Confluence: **3. Project Documentation / Functional Document**
 - Status on first publish: **Draft for Client Review**
-- On publication: trigger **fc-handoff-to-architect** with the Confluence page URL and version number
 
-After publishing, confirm to the user:
+After publishing, confirm to the consultant:
 
-> "Functional Document v1.0 published to [Confluence URL]. Status: Draft for Client Review. Next step: share with client stakeholders and schedule sign-off review. Once approved, trigger fc-handoff-to-architect."
+> "Functional Document v1.0 published to [Confluence URL]. Status: Draft for Client Review.
+>
+> **Recommended next steps:**
+> 1. Share with client stakeholders and schedule sign-off review.
+> 2. Once the document is signed off → invoke **fc-uat-generator** to generate the UAT Plan.
+> 3. Optionally, invoke **fc-architect-handoff** to generate the technical handoff package for the architect agent (can be done at any time after sign-off)."
