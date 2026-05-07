@@ -47,6 +47,11 @@ Create an FDR when:
 
 ### Pending *(only if Status = Open)*
 [What specific answer is needed. Who needs to provide it.]
+
+### Revision History *(only if the FDR has been updated after initial creation)*
+| Date | Change | Trigger |
+|---|---|---|
+| [YYYY-MM-DD] | [What changed in Decision, Status, or Consequences] | [CL-ID if triggered by a scope change, or "Design review"] |
 ```
 
 ## Full FDR Document Structure
@@ -89,3 +94,4 @@ Sources: Requirements Register, Workshop sessions [list], Functional Document v[
 - All Open FDRs must be resolved before the Functional Document is presented for sign-off
 - Every Assumed FDR must appear explicitly in the Functional Document (Section 3.3) so the client can accept or reject the assumption
 - Changing an FDR's Decision requires updating the version and noting what changed
+- When an FDR's Decision or Status changes after the Functional Document has been signed off, add a Revision History entry referencing the CL-ID from the Change Log. This links the FDR change to its contractual justification.
