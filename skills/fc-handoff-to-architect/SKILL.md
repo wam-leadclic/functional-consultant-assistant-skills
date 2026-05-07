@@ -1,7 +1,7 @@
 ---
-name: fc-handoff-to-architect
-description: Transforms the approved Functional Document into a structured technical handoff package for the Salesforce architect. Produces a self-contained input package for the architect-assistant agent, enabling a seamless FC → Architecture transition without the architect needing to re-read commercial or workshop materials.
-argument-hint: Run after Functional Document is signed off. Requires access to the Functional Document in Confluence.
+name: fc-architect-handoff
+description: Optional step. Transforms the approved Functional Document into a structured technical handoff package optimized for consumption by the architect-assistant AI agent. Can be generated at any time after Functional Document sign-off. Produces a self-contained, machine-readable input package — no narrative prose.
+argument-hint: Run after Functional Document is signed off. Optional — only invoke if an architect-assistant agent will be used. Requires Functional Document, Integration Map, Requirements Register, and Scope Register.
 tools:
   - Atlassian (Confluence)
 ---
@@ -12,7 +12,14 @@ Converts the signed-off Functional Document into a structured technical handoff 
 
 ## Purpose
 
-The handoff package bridges functional consulting and technical architecture. It distills the Functional Document into specification-grade inputs: requirements, business rules, data model signals, access design, automation needs, integrations, and open questions. Client-facing narrative is stripped; every item retained must be actionable for the architect.
+This is an **optional step**. Generate this handoff package only if the architect-assistant AI agent will be used downstream. If architecture work will be done by a human architect reading the Functional Document directly, skip this skill.
+
+This document is consumed by an AI agent, not a human. It must be optimized for machine readability:
+- No narrative transitions or filler prose
+- Every field has a defined value or `N/A` — no blank cells
+- Avoid ambiguous pronouns and implicit references
+- Every row traces to a REQ-ID or FDR-ID
+- Structure over narrative throughout
 
 ## What the Architect-Assistant Needs
 
@@ -27,6 +34,15 @@ The downstream architect-assistant agent requires:
 - Reporting needs
 - Known constraints and non-functional requirements
 - Open technical questions with functional context
+
+## Pre-flight Checks
+
+Verify all four inputs exist in Confluence before generating anything. If any input is missing: stop and report.
+
+- [ ] Functional Document — status = **Signed Off** (not Draft, not In Review)
+- [ ] Integration Map — exists under `1. Discovery / Integration Map`. If `Has integrations: no` in `agent-params.md`, mark this check as N/A.
+- [ ] Requirements Register — exists under `1. Discovery / Requirements Register`
+- [ ] Scope Register — exists under `2. Solution Design / Scope Register` and is current
 
 ## Execution Steps
 
@@ -58,7 +74,16 @@ Date: [date] | Source: Functional Document v[X]
 ---
 
 ## 1. Project Context
-[3–5 sentences: what this project is, Salesforce products in scope, client profile, key objectives]
+| Key | Value |
+|---|---|
+| Project name | [value] |
+| Client | [value] |
+| Industry | [value] |
+| Salesforce products in scope | [comma-separated list] |
+| Primary objective | [one sentence — business outcome, not implementation description] |
+| Go-live target | [date or TBD] |
+| FD version | [X.Y] |
+| FD sign-off date | [date] |
 
 ## 2. Salesforce Products & Licenses in Scope
 | Product | Edition / License | Purpose |
@@ -139,7 +164,8 @@ Complexity Signal: Low | Medium | High | TBD
 ---
 
 ## 15. FDR Reference Index
-| FDR-ID | Title | Status | Relevant to Architecture Phase |
+*(Machine-readable reference only. Include all Confirmed and Assumed FDRs. Status must be one of: Confirmed / Assumed. No Open FDRs should appear — these block sign-off.)*
+| FDR-ID | Title | Status | Architecture relevance | Decision summary |
 ```
 
 ## Handoff Rules
@@ -149,3 +175,7 @@ Complexity Signal: Low | Medium | High | TBD
 - **Do not suggest implementation mechanisms.** Whether something is a Flow, Apex trigger, validation rule, or Process Builder is the architect's decision. Describe what must happen, not how.
 - **"Standard Salesforce" is not a valid specification.** Be specific: "Account object", "Opportunity Stages picklist", "Lead assignment rules by territory".
 - **Flag scope changes discovered during generation.** If the Functional Document contains something not reflected in the scope register, halt and report it before continuing. Do not silently include out-of-scope items.
+- **Optimized for AI consumption.** Every section uses tables or structured lists — no prose paragraphs except Section 1. An AI agent cannot reliably extract structured data from unstructured narrative.
+- **No blank cells.** If a value is unknown, write `TBD`. If not applicable, write `N/A`. Blank cells cause parsing failures in downstream agents.
+- **No implicit references.** Do not write "as mentioned above" or "per the security model". Every row must be self-contained.
+- **This document is optional.** If generated, it must be kept in sync with the Functional Document. If a scope change (CL entry) affects the handoff package, regenerate the relevant sections.
