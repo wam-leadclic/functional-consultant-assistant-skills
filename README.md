@@ -57,7 +57,7 @@ claude --version
 
 ---
 
-### Step 4 — Connect to Atlassian (Confluence + Jira)
+### Step 4 — Connect to Atlassian (Confluence)
 
 First, check whether the Atlassian MCP server is already configured:
 
@@ -77,34 +77,17 @@ claude mcp add --transport http atlassian https://mcp.atlassian.com/v1/mcp
 
 ---
 
-### Step 5 — Connect to GitHub *(optional — only needed for the UAT phase)*
+### Step 5 — Connect to Google Drive *(optional — needed if project materials are stored in Drive)*
 
-**Step 5a — Create your GitHub token**
-
-1. Go to [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new)
-2. Name it `FC Assistant`
-3. Set expiration to 90 days
-4. Under **Repository access**, select the client repository
-5. Under **Repository permissions → Contents**, choose `Read-only`
-6. Click **Generate token** and copy the value — you will only see it once
-
-**Step 5b — Save your token**
-
-Create a new file called `.env` in the project root. In VSCode, right-click the root folder, select **New File**, name it `.env`, and paste this inside:
-
-```
-GITHUB_TOKEN=paste_your_token_here
-```
-
-Replace `paste_your_token_here` with the token you just copied and save the file.
-
-This file is gitignored — its contents will never be uploaded to GitHub.
-
-**Step 5c — Register the token with Claude Code**
+If your commercial or workshop materials are stored in Google Drive, add the Google Drive MCP:
 
 ```bash
-source .env && claude mcp add-json github "{\"type\":\"http\",\"url\":\"https://api.githubcopilot.com/mcp\",\"headers\":{\"Authorization\":\"Bearer $GITHUB_TOKEN\"}}"
+claude mcp add --transport http google-drive https://mcp.google.com/drive
 ```
+
+The browser will prompt you to authenticate with your Google account the first time it is used.
+
+If all your project materials are stored locally in `resources/`, you can skip this step.
 
 ---
 
@@ -114,7 +97,7 @@ source .env && claude mcp add-json github "{\"type\":\"http\",\"url\":\"https://
 claude mcp list
 ```
 
-You should see `atlassian` in the list (and `github` if you completed Step 5).
+You should see `atlassian` in the list (and `google-drive` if you completed Step 5).
 
 ---
 
@@ -122,19 +105,21 @@ You should see `atlassian` in the list (and `github` if you completed Step 5).
 
 Follow these steps at the beginning of each client engagement.
 
-### 1. Fill in CLAUDE.md
+### 1. Fill in agent-params.md
 
-Open `CLAUDE.md` in VSCode and replace every `[...]` placeholder with the actual project details:
+Open `agent-params.md` in VSCode and replace every `[...]` placeholder with the actual project details:
 
 | Field | Where to find it |
 |---|---|
 | Project name | Name of the engagement |
 | Client | Client company name |
+| Output language | ISO 639-1 code — `es` for Spanish, `en` for English, etc. Defaults to `es`. |
+| Has integrations | `yes` if the project involves third-party system integrations; `no` otherwise |
 | Confluence Base URL | `https://yourorg.atlassian.net/wiki` |
 | Confluence Space key | Visible in the Confluence space URL |
 | Project root page ID | In the Confluence page URL: `.../pages/`**123456**`/...` |
-| Jira Project key | Prefix of all Jira tickets (e.g. `PROJ` in `PROJ-123`) |
-| GitHub Repository | Full URL — only if using the UAT phase |
+
+To add Google Drive or Confluence as material sources, uncomment the relevant entries under `## Commercial materials sources` or `## Workshop materials sources` and fill in the folder/page IDs.
 
 ### 2. Create the resource folders
 
@@ -144,7 +129,7 @@ mkdir -p resources/commercial resources/workshops
 
 ### 3. Add the commercial materials
 
-Copy the pre-sales documents (proposals, SOW, RFPs) into `resources/commercial/`.
+Copy the pre-sales documents (proposals, SOW, RFPs) into `resources/commercial/`. Alternatively, configure a Google Drive folder in `agent-params.md`.
 
 ### 4. Start Claude Code
 
@@ -158,23 +143,23 @@ Then type:
 /fc-assistant new project
 ```
 
-The assistant will read `CLAUDE.md`, confirm the configuration, create the Confluence page structure, and guide you from there.
+The assistant will read `agent-params.md`, confirm the configuration, create the Confluence page structure, and guide you from there.
 
 ---
 
 ## Engagement Lifecycle
 
 ```
-Commercial materials
+Commercial materials (local, Google Drive, or Confluence)
         │
         ▼
-[fc-workshop-prep]          Phase 1 — Workshop guide from pre-sales materials
+[fc-workshop-prep]          Phase 1 — Workshop guide from commercial + client system materials
         │
         ▼
    WORKSHOPS
         │
         ▼
-[fc-workshop-analysis]      Phase 2 — Requirements Register + Open FDRs
+[fc-workshop-analysis]      Phase 2 — Requirements Register + FDRs + Integration Map
         │
         ▼
 [fc-solution-design] ◄──── iterative FDR resolution
@@ -182,14 +167,16 @@ Commercial materials
         ▼
 [fc-functional-document]    Phase 4 — Formal sign-off document
         │
-        ├──► [fc-handoff-to-architect]   Phase 5 — Input for architect agent
+        ├──► [fc-uat-generator]          Phase 4.5 — UAT plan + test cases (immediately after sign-off)
         │
-        ├──► [fc-uat-generator]          Phase 6 — UAT plan + test cases
+        ├──► [fc-training-materials]     Phase 6 — Training per user profile
         │
-        └──► [fc-training-materials]     Phase 7 — Training per user profile
+        └──► [fc-architect-handoff]      Optional — Input package for architect AI agent
 ```
 
-`fc-scope-register` and `fc-fdr-format` are cross-cutting utilities used throughout the lifecycle.
+`fc-scope-register`, `fc-fdr-format`, and `fc-change-log` are cross-cutting utilities used throughout the lifecycle.
+
+**Scope changes after sign-off:** use the `scope-change` mode in `fc-assistant`. It guides you through the full chain: Scope Change Request → Change Log entry → Functional Document update → UAT regeneration → training update.
 
 ---
 
@@ -201,7 +188,7 @@ Commercial materials
 
 Detects the current project phase by querying Confluence for existing artifacts, proposes the next action, and invokes the appropriate skill. Enforces quality gates (e.g., the Functional Document cannot be generated while Open FDRs exist; UAT cannot start without a signed-off Functional Document). Carries embedded Salesforce expertise — it challenges skipped phases, flags licensing gaps, and surfaces complexity that warrants architect escalation.
 
-Modes: `new project` · `resume [project name]` · `status` · direct invocation (`"prepare workshops"`, `"design the solution"`, etc.)
+Modes: `new project` · `resume [project name]` · `status` · `scope-change` · direct invocation (`"prepare workshops"`, `"design the solution"`, etc.)
 
 ---
 
@@ -215,6 +202,8 @@ A Functional Decision Record (FDR) captures every design decision, working assum
 - `Assumed` — inferred by the consultant; must be surfaced in the Functional Document for client review
 - `Open` — unresolved; blocks Functional Document sign-off
 
+Each FDR includes a Revision History table that logs changes made after the Functional Document has been signed off, linked to the corresponding Change Log entry.
+
 No assumption is ever buried in prose. Every assumption is an FDR.
 
 ---
@@ -225,7 +214,26 @@ No assumption is ever buried in prose. Every assumption is an FDR.
 
 Tracks in-scope items, explicit exclusions, and Scope Change Requests (SCRs). Other skills invoke this when they detect something that may extend agreed scope — scope creep is never silently absorbed. Supports four modes: add to scope, exclude, scope check, and scope change request.
 
+When an SCR is approved and the Functional Document already exists, the scope register automatically triggers `fc-change-log` to register the impact on the signed-off document.
+
 Publishes to Confluence: `2. Solution Design / Scope Register`.
+
+---
+
+### `fc-change-log` — Change Log
+
+**Utility. Manages all changes to the Functional Document after client sign-off.**
+
+A signed-off Functional Document is a contractual artifact. Any modification after sign-off must be explicit, traced, and reflected across UATs and training materials. `fc-change-log` enforces this:
+
+1. Verifies an approved SCR exists before registering a change
+2. Produces a CL entry with downstream impact assessment (UATs, training materials, FDRs)
+3. Applies the change to the Functional Document, incrementing its version
+4. Flags affected UAT test cases as `Needs Review` and training modules as `Needs Update`
+
+Four modes: `register-change` · `assess-impact` · `integrate-change` · `list-changes`
+
+Publishes to Confluence: `3. Project Documentation / Change Log`.
 
 ---
 
@@ -233,13 +241,17 @@ Publishes to Confluence: `2. Solution Design / Scope Register`.
 
 **Phase 1. Generates the workshop guide from commercial materials.**
 
-Reads proposals, SOWs, RFPs, and pre-sales documents from `resources/commercial/`. Identifies which Salesforce functional areas are in scope, extracts known facts and hypotheses, and produces a structured workshop guide with:
+Reads proposals, SOWs, RFPs, and pre-sales documents from configured sources (local `resources/commercial/`, Google Drive, or Confluence). Also processes client system documentation (ERP manuals, API docs, process diagrams) if found alongside the commercial materials — this directly improves the quality of discovery questions.
+
+Produces a structured workshop guide with:
 
 - A recommended session plan (max 2–3 functional areas per session)
 - Per-session discovery questions in plain business language (no Salesforce jargon)
 - Hypotheses to validate with the client
 - Documents to request before or during each session
-- An integration investigation agenda for third-party systems
+- An integration investigation agenda (only if integrations are in scope)
+
+All output is generated in the language configured in `agent-params.md`.
 
 Publishes to Confluence: `1. Discovery / Workshop Guide`.
 
@@ -249,12 +261,14 @@ Publishes to Confluence: `1. Discovery / Workshop Guide`.
 
 **Phase 2. Transforms raw workshop output into structured requirements.**
 
-Reads transcripts, session notes, and client-provided materials from `resources/workshops/`. Extracts functional requirements, business rules, non-functional requirements, user profiles, integration requirements, and reporting needs — all with source traceability. Flags ambiguities, contradictions, and gaps as Open FDRs rather than resolving them silently.
+Reads transcripts, notes, client-provided materials, and system documentation from all configured sources (local, Google Drive, Confluence). Organises the material inventory by document type — not by session number, since workshop agendas often evolve organically.
+
+Extracts functional requirements, business rules, non-functional requirements, user profiles, integration requirements, and reporting needs — all with source traceability. Flags ambiguities, contradictions, and gaps as Open FDRs rather than resolving them silently.
 
 Outputs:
 - **Requirements Register** — every requirement with type, priority (MoSCoW), status, and source
 - **FDRs** — Open records for every unresolved decision or ambiguity
-- **Integration Map** — third-party systems with data direction, frequency, and volume
+- **Integration Map** — functional map of third-party systems: direction, system of record, timing (real-time vs. batch), frequency, and data objects. Strictly functional — no technical implementation patterns.
 
 Publishes to Confluence: `1. Discovery / Requirements Register`, `1. Discovery / FDRs`, `1. Discovery / Integration Map`.
 
@@ -273,7 +287,7 @@ Operates in six sequential phases:
 | C — Solution design | Designs each functional area across 7 dimensions: feature mapping, TO-BE process, UX per profile, automation needs, data requirements, reporting, and integration touchpoints |
 | D — Critical challenge | Runs a 6-question challenge checklist on every major decision before recording it — surfaces suboptimal designs before they reach UAT |
 | E — Security model | Designs OWDs, role hierarchy, profiles vs. permission sets, sharing rules, and flags complex access patterns |
-| F — Integration design | Documents functional integration requirements (direction, trigger, data, error handling, volume) without specifying the technical mechanism |
+| F — Integration design | Documents functional integration requirements (direction, trigger, data objects, business criticality, error handling) without specifying technical implementation mechanisms |
 
 Design principles are non-negotiable: standard over custom, declarative over programmatic, restrictive OWD, minimal profiles, no silent assumptions, licensing discipline, 3-year scalability.
 
@@ -285,33 +299,27 @@ Publishes to Confluence: `2. Solution Design / Solution Overview`.
 
 **Phase 4. Generates the formal sign-off document.**
 
-Runs a four-condition quality gate before generating anything: Solution Overview must be Approved, zero Open FDRs, Scope Register current, no unresolved ambiguous requirements. The document is the contractual reference for the implementation — precise enough for the technical team, clear enough for the client to sign.
+Runs a quality gate before generating anything: Solution Overview must be Approved, zero Open FDRs, Scope Register current, no unresolved ambiguous requirements, and language configured in `agent-params.md`. The document is the contractual reference for the implementation — precise enough for the technical team, clear enough for the client to sign.
 
 Key sections: executive summary, scope (in/out/assumptions/constraints), stakeholders and profiles, solution by functional area, security model, integrations, data migration, reporting, deliverables, explicit exclusions, and a full decisions log. Every Assumed FDR is listed in Section 3.3 for explicit client review.
+
+After sign-off, the recommended next step is `fc-uat-generator`. `fc-architect-handoff` is available as an optional step at any time after sign-off.
 
 Publishes to Confluence: `3. Project Documentation / Functional Document`.
 
 ---
 
-### `fc-handoff-to-architect` — Technical Handoff
-
-**Phase 5. Bridges functional consulting and technical architecture.**
-
-Transforms the signed-off Functional Document into a self-contained input package for the `architect-assistant` agent. The architect reads this and nothing else — no workshop transcripts, no commercial materials. Contains: business entities, business rules, user profiles and access requirements, automation needs (functional level only), integration requirements, security recommendations, and flagged technical risks.
-
-Does not suggest implementation mechanisms — that is the architect's domain.
-
-Publishes to Confluence: `2. Solution Design / Technical Handoff Package`.
-
----
-
 ### `fc-uat-generator` — UAT Generator
 
-**Phase 6. Generates the UAT plan and traceable test cases.**
+**Phase 4.5. Generates the UAT plan and traceable test cases.**
 
-Requires: Functional Document (Confluence), Jira board, and optionally the GitHub repository. First produces a coverage gap analysis (Functional Document requirements vs. Jira completed items) and waits for confirmation before generating test cases. Reviews GitHub customizations for edge cases implied by the implementation.
+Run immediately after the Functional Document is signed off — before development begins, not after. Test cases are derived exclusively from the Functional Document and FDRs. No dependency on Jira or GitHub.
 
-Test cases cover: happy path, alternate paths, negative cases, security checks (one per profile minimum), integration scenarios (success and failure), and edge cases from code review. Every test case traces to a requirement (REQ-NNN) or FDR, and is written to be executed by a business user without technical guidance.
+First produces a coverage gap analysis (FD sections vs. planned test cases) and waits for confirmation. Then derives edge cases from FDRs (boundary conditions, exception paths, security scenarios). Test cases cover: happy path, alternate paths, negative cases, security checks (one per profile minimum), integration scenarios (success and failure), and FDR edge cases.
+
+Every test case traces to a requirement (REQ-NNN) or FDR plus the FD section. Written to be executed by a business user without technical guidance.
+
+After scope changes: use `regenerate [CL-ID]` mode to update only the affected test cases.
 
 Publishes to Confluence: `3. Project Documentation / UAT Plan`.
 
@@ -319,17 +327,33 @@ Publishes to Confluence: `3. Project Documentation / UAT Plan`.
 
 ### `fc-training-materials` — Training Materials
 
-**Phase 7. Generates profile-specific end-user training materials.**
+**Phase 6. Generates profile-specific end-user training materials.**
 
 Produces a training content plan first and waits for confirmation. Then generates, per profile:
 
 - **User Guide** — comprehensive, task-oriented, step-by-step modules
 - **Quick Reference Card** — one page maximum, key daily tasks only
-- **Scenario-Based Exercises** — adapted from UAT test cases, reframed as business scenarios
+- **Scenario-Based Exercises** — adapted from UAT test cases (if available) or from TO-BE process descriptions, reframed as business scenarios
 
-Writing rules are strict: no Salesforce jargon, action-oriented headings, client terminology throughout, profile isolation (a sales rep's guide never describes what the manager sees), and short modules (one page maximum per task).
+If the UAT Plan is not yet available, exercises are generated from the Solution Overview process steps. After scope changes, use regeneration mode to update only affected profiles and modules.
+
+Writing rules are strict: no Salesforce jargon, action-oriented headings, client terminology throughout, profile isolation, and short modules.
 
 Publishes to Confluence: `3. Project Documentation / Training Materials / [Profile Name]`, plus a shared Glossary.
+
+---
+
+### `fc-architect-handoff` — Technical Handoff *(optional)*
+
+**Optional. Generates an input package for the architect AI agent.**
+
+Only invoke this skill if the `architect-assistant` AI agent will be used for the technical architecture phase. If a human architect is working directly from the Functional Document, skip this skill.
+
+Transforms the signed-off Functional Document into a structured, machine-readable package optimised for AI agent consumption — structured tables throughout, no narrative prose, no blank cells, every row traces to a REQ-ID or FDR-ID. Pre-flight verifies that the Functional Document, Integration Map, Requirements Register, and Scope Register are all available before generating.
+
+Does not suggest implementation mechanisms — that is the architect's domain.
+
+Publishes to Confluence: `2. Solution Design / Technical Handoff Package`.
 
 ---
 
@@ -339,18 +363,21 @@ Publishes to Confluence: `3. Project Documentation / Training Materials / [Profi
 functional-consultant-assistant-agent/
 ├── .gitignore
 ├── README.md
+├── CLAUDE.md               Claude Code instructions (not project config)
+├── agent-params.md         Project configuration — fill this in for each engagement
 ├── skills/
-│   ├── fc-assistant/           Orchestrator
-│   ├── fc-fdr-format/          Utility — FDR format definition
-│   ├── fc-scope-register/      Utility — Scope management
-│   ├── fc-workshop-prep/       Phase 1 — Workshop guide
-│   ├── fc-workshop-analysis/   Phase 2 — Requirements analysis
-│   ├── fc-solution-design/     Phase 3 — Solution design
-│   ├── fc-functional-document/ Phase 4 — Formal document
-│   ├── fc-handoff-to-architect/Phase 5 — Architect handoff
-│   ├── fc-uat-generator/       Phase 6 — UAT plan
-│   └── fc-training-materials/  Phase 7 — Training materials
-└── resources/                  Client materials (gitignored)
+│   ├── fc-assistant/               Orchestrator
+│   ├── fc-fdr-format/              Utility — FDR format definition
+│   ├── fc-scope-register/          Utility — Scope management
+│   ├── fc-change-log/              Utility — Post-sign-off FD change management
+│   ├── fc-workshop-prep/           Phase 1 — Workshop guide
+│   ├── fc-workshop-analysis/       Phase 2 — Requirements analysis + Integration Map
+│   ├── fc-solution-design/         Phase 3 — Solution design
+│   ├── fc-functional-document/     Phase 4 — Formal document
+│   ├── fc-uat-generator/           Phase 4.5 — UAT plan
+│   ├── fc-training-materials/      Phase 6 — Training materials
+│   └── fc-handoff-to-architect/    Optional — Architect AI agent handoff
+└── resources/                      Client materials (gitignored)
     ├── commercial/
     └── workshops/
 ```
@@ -360,10 +387,10 @@ Client materials for each project go in `resources/` at the project root:
 ```
 resources/
 ├── commercial/         Proposals, SOW, RFPs, pre-sales materials
-└── workshops/
-    ├── session-01/     Transcripts, notes, client system docs, whiteboard photos
-    └── session-02/
+└── workshops/          Transcripts, notes, client system docs, process diagrams
 ```
+
+Alternatively, configure Google Drive or Confluence as material sources in `agent-params.md`.
 
 ---
 
@@ -376,13 +403,15 @@ Each project uses this page hierarchy in Confluence:
 ├── 1. Discovery
 │   ├── Workshop Guide
 │   ├── Requirements Register
+│   ├── Integration Map
 │   └── FDRs
 ├── 2. Solution Design
 │   ├── Solution Overview
 │   ├── Scope Register
-│   └── Technical Handoff Package
+│   └── Technical Handoff Package  ← only if fc-architect-handoff is invoked
 └── 3. Project Documentation
     ├── Functional Document
+    ├── Change Log
     ├── UAT Plan
     └── Training Materials
 ```
@@ -393,13 +422,19 @@ The `fc-assistant` creates this structure automatically when starting a new proj
 
 ## Key Concepts
 
-**FDR (Functional Decision Record)** — the primary traceability mechanism. Every design decision, working assumption, or open question is captured as an FDR. No assumption is ever implicit. See `fc-fdr-format` for the full format specification.
+**FDR (Functional Decision Record)** — the primary traceability mechanism. Every design decision, working assumption, or open question is captured as an FDR. No assumption is ever implicit. FDRs include a Revision History field that links post-sign-off changes to their Change Log entry. See `fc-fdr-format` for the full format specification.
 
 **Scope Register** — the authoritative record of what is and is not included in the project. Managed by `fc-scope-register`, referenced by all other skills. Scope additions without an approved SCR are blocked.
 
+**Change Log** — the record of all changes to the signed-off Functional Document. Managed by `fc-change-log`. Every change requires an approved SCR and produces a new FD version, with impact flags on affected UAT test cases and training materials.
+
+**Integration Map** — a functional map of third-party system integrations produced in Phase 2. Captures direction, system of record, timing, and frequency. Strictly functional — no technical implementation patterns (API types, middleware, etc.) unless explicitly required by the client.
+
 **Quality gates** — enforced by `fc-assistant`. Key gates:
 - Functional Document requires zero Open FDRs and an Approved Solution Overview
-- UAT and Training phases require a signed-off Functional Document
+- UAT generation requires a signed-off Functional Document (runs immediately after sign-off, before development)
+- Training phases require a signed-off Functional Document (UAT Plan is optional)
 - Solution Design requires a clean Requirements Register (no unresolved conflicts)
+- If `Has integrations: yes` in agent-params.md, an Integration Map is required before Solution Design begins
 
-**Architect handoff** — `fc-handoff-to-architect` produces the input package consumed by the `architect-assistant` agent (in `architect-assistant-skills/`). The two agents form a pipeline: functional consultant → architect → development.
+**Architect handoff** — `fc-architect-handoff` (skill name) produces the input package consumed by the `architect-assistant` agent. It is optional — only generate it if the architect-assistant AI agent is being used. The package is optimised for machine reading, not human reading.
