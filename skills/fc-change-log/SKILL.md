@@ -137,8 +137,8 @@ Pre-condition: CL entry must be in `Approved` status. If status is `Pending Revi
    - Apply changes to all affected sections
    - Update Section 3.3 (Assumptions) if any Assumed FDR was affected
 2. **Update affected FDRs:** Add a Revision History row to each impacted FDR, referencing this CL-ID.
-3. **Mark UAT test cases:** Add a `[Needs Review — CL-NNN]` flag to each affected test case in the UAT Plan.
-4. **Mark training modules:** Add a `[Needs Update — CL-NNN]` flag to each affected section in the training materials.
+3. **Mark UAT test cases:** Add a `[Needs Review — CL-[NNN]]` flag to each affected test case in the UAT Plan.
+4. **Mark training modules:** Add a `[Needs Update — CL-[NNN]]` flag to each affected section in the training materials.
 5. **Update the CL entry status** to `Integrated` and record the integration date.
 6. **Confirm to the consultant:**
    > "Change CL-[NNN] integrated. Functional Document updated to v[X.Z]. [N] UAT test cases flagged for review. [N] training modules flagged for update. [N] FDRs revised."
