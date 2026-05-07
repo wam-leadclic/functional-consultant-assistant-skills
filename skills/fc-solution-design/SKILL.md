@@ -246,7 +246,6 @@ For each integration:
 | Trigger | What event starts the integration (record creation, schedule, user action) |
 | Business objects involved | In business terms — not object API names |
 | Key data points | What data crosses the boundary |
-| Error handling requirement | What the business requires to happen when the integration fails (alert, retry, manual fallback) |
 | Volume and frequency | Records per run, runs per day |
 | Business criticality & error handling requirement | What the business requires when the integration fails (alert, retry, manual fallback). What SLA applies to this integration. Do not specify technical implementation patterns (API, event bus, middleware) — that is architectural scope. |
 
