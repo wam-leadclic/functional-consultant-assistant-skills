@@ -1,6 +1,6 @@
 # FC Assistant — Claude Code Instructions
 
-This repository contains the skills for WAM Global's Functional Consultant AI assistant.
+This repository contains the skills for the Functional Consultant AI assistant.
 
 ## How to use
 Run the `fc-assistant` skill to start or resume a project engagement.
