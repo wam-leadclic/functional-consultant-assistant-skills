@@ -248,9 +248,9 @@ For each integration:
 | Key data points | What data crosses the boundary |
 | Error handling requirement | What the business requires to happen when the integration fails (alert, retry, manual fallback) |
 | Volume and frequency | Records per run, runs per day |
-| Functional pattern recommendation | Native connector / middleware / direct API — with rationale |
+| Business criticality & error handling requirement | What the business requires when the integration fails (alert, retry, manual fallback). What SLA applies to this integration. Do not specify technical implementation patterns (API, event bus, middleware) — that is architectural scope. |
 
-The functional pattern recommendation is a business-level input to the architect, not a technical decision. State the rationale: reliability requirement, maintenance model, licensing, complexity tolerance.
+**Integration design rule:** Do not specify or recommend technical implementation mechanisms (REST API, SOAP, event bus, middleware platform, ETL tool, etc.) at this phase. The only exception is when a technical constraint is an explicit client requirement documented in an FDR (e.g., "client ERP only supports SFTP file transfers"). In that case, record it as a constraint, not a recommendation.
 
 ---
 
