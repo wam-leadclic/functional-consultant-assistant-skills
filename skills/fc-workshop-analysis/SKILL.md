@@ -4,6 +4,7 @@ description: Analyzes all workshop materials (transcripts, documents, process di
 argument-hint: Point to resources/workshops/ directory or a specific session folder. Run after each session for incremental analysis, or after all sessions for full analysis.
 tools:
   - Atlassian
+  - Google Drive
 ---
 
 # fc-workshop-analysis
@@ -26,18 +27,31 @@ Use all available materials. Do not skip client system documentation — it freq
 
 ## Execution Steps
 
+### Step 0 — Read project configuration
+
+Read `agent-params.md` from the project root. Extract:
+- **Output language** — all output documents must be in this language
+- **Workshop materials sources** — list of sources (local, Google Drive, Confluence)
+- **Has integrations** — if `no`, skip Step 5 (Integration Map) and mark it as N/A
+
 ### Step 1 — Inventory materials
 
-Before analysis, list all available materials per session:
+Before analysis, list all available materials across all configured sources. Organize by **type of material**, not by session — workshop schedules change organically and session-based organization creates gaps when the agenda differs from what was planned.
 
-| Session | Date | Transcript | Notes | Client Docs | Coverage |
+| File / Document | Type | Source | Date | Functional Areas Covered | Coverage Quality |
 |---|---|---|---|---|---|
-| Session 1 | [date] | [file or missing] | [file or missing] | [files or none] | [Full / Partial / Incomplete] |
+| [filename or title] | Transcript / Notes / Process Diagram / Client System Doc / Commercial Doc / Other | Local / Google Drive / Confluence | [date or unknown] | [e.g. Lead Management, Integrations] | Full / Partial / Unavailable |
+
+**Coverage Quality values:**
+- `Full` — complete material for the areas it covers (transcript + notes, or detailed document)
+- `Partial` — material exists but is incomplete (notes only, partial transcript, informal diagram)
+- `Unavailable` — area was covered in a session but no materials are available
 
 **Rules:**
-- If a session has no transcript and no notes, mark it as **Incomplete** and flag before proceeding.
-- If coverage is Partial (e.g. only notes, no transcript), note what may be missing.
-- Do not skip sessions. An incomplete session must be flagged, not silently omitted.
+- If a functional area identified in the Workshop Guide has no material of any type: mark it as `Unavailable` and flag before proceeding. Do not silently skip it.
+- If coverage is `Partial`, note specifically what appears to be missing (e.g., "transcript missing — notes only for the first 30 minutes").
+- Client system documentation (ERP manuals, API docs, DB schemas, AS-IS diagrams) must be listed — it frequently contains business rules not verbalized in workshops.
+- Do not skip any file found in the configured sources, regardless of format.
 
 ### Step 2 — Extract requirements
 
@@ -106,15 +120,25 @@ Do not silently resolve any of the above. Every unresolved item must become an F
 
 ### Step 5 — Build the Integration Map
 
-For each third-party system mentioned or confirmed:
+For each third-party system mentioned or confirmed across all materials:
 
-| System | Direction | Data Objects | Frequency | Volume (approx.) | Auth Method | System Owner | Status | Notes |
-|---|---|---|---|---|---|---|---|---|
+| System | Direction | System of Record | Timing | Frequency | Data Objects | Volume (approx.) | System Owner | Status | Notes |
+|---|---|---|---|---|---|---|---|---|---|
 
-**Direction values:** `SF→External` | `External→SF` | `Bidirectional`
-**Status values:** `Confirmed` | `Needs Clarification` | `Out of Scope`
+**Column definitions:**
+- **Direction:** `SF→External` | `External→SF` | `Bidirectional`
+- **System of Record:** Which system is the source of truth for each data object? (e.g., "ERP is SoR for invoices; Salesforce is SoR for opportunities")
+- **Timing:** `Real-time` | `Near real-time` | `Asynchronous / batch`
+- **Frequency:** How often data flows (e.g., "on record creation", "hourly", "nightly")
+- **Status:** `Confirmed` | `Needs Clarification` | `Out of Scope`
 
 If any field is unknown, mark as `TBC` and create an Open FDR for that system.
+
+**Integration Map rules:**
+- This is a **functional** map — it describes business behavior, not technical implementation. Do not discuss whether the integration will use a REST API, event bus, middleware, or any other technical mechanism. Those decisions belong to the architect.
+- Exception: if the client has explicitly stated a technical requirement (e.g., "our ERP only supports SFTP file transfer") and this is documented in commercial materials or workshop notes, record it in the Notes column as a **constraint**, not a design recommendation.
+- The System of Record field is mandatory when Direction is Bidirectional. Without it, data ownership conflicts are guaranteed during implementation.
+- If `Has integrations: no` in `agent-params.md`, skip this step entirely and note: "Integration Map not applicable — no system integrations in scope."
 
 ### Step 6 — Publish to Confluence
 
@@ -207,3 +231,4 @@ Log each item to the Scope Register with session source.
 - When the client uses inconsistent terminology, log both terms in the Key Data Entities & Terminology table. Never silently normalize terminology — the client's language matters for adoption and training.
 - Out-of-scope items must be logged, not discarded. They inform future phases and protect against scope creep disputes.
 - Do not group unrelated requirements into a single entry to save space. One requirement = one row.
+- **Language:** Generate the Requirements Register, FDR entries, and Integration Map in the language specified in `agent-params.md`.
