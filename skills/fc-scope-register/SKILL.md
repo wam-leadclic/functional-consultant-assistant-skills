@@ -55,6 +55,8 @@ Document a new SCR. Include:
 
 Do not approve or reject SCRs unilaterally. This requires explicit agreement from the client and WAM Global.
 
+**Post-approval trigger:** When an SCR transitions to `Approved` status and a Functional Document already exists (Phase 4 complete or past), immediately invoke fc-change-log in `register-change` mode. An approved SCR that does not produce a corresponding Change Log entry and a new FD version is incomplete. The SCR is not considered fully closed until the FD has been updated and the CL entry is `Integrated`.
+
 ### Mode: generate-scope-register
 
 Compile the full Scope Register and publish it to Confluence under "2. Solution Design" > "Scope Register". Include all three tables, a revision history table, and a last-updated timestamp.
