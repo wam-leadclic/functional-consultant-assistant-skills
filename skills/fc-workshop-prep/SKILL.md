@@ -4,6 +4,7 @@ description: Generates a structured workshop guide from commercial materials (pr
 argument-hint: Point to resources/commercial/ directory with pre-sales materials, or provide a Confluence space key with pre-sales documentation.
 tools:
   - Atlassian
+  - Google Drive
 ---
 
 # fc-workshop-prep
@@ -18,12 +19,26 @@ Discovery is expensive time. Walking into a session without a structured plan wa
 
 ## Inputs
 
-- `resources/commercial/` — proposals, SOW, RFPs, email summaries, audit documents, previous Salesforce assessments
-- OR Confluence space/page with pre-sales documentation
+Sources are defined in `agent-params.md` under `## Commercial materials sources`. Read all configured sources:
 
-If both are available, use both. Commercial materials take precedence over memory or assumptions.
+- **Local:** `resources/commercial/` — proposals, SOW, RFPs, email summaries, audit documents, previous Salesforce assessments
+- **Google Drive:** folder configured in agent-params.md (if present) — same document types
+- **Confluence:** page configured in agent-params.md (if present) — pre-sales documentation
+
+If multiple sources are configured, read all of them. Resolve contradictions between sources by flagging them as Open FDRs, not by silently choosing one.
+
+Additionally, look for **client system documentation** in all configured sources (ERP manuals, API documentation, data dictionaries, process diagrams). This type of material is often placed alongside commercial materials. If found, process it in Step 1 alongside the commercial documents — it provides business rules and data structures that directly improve discovery question quality.
 
 ## Execution Steps
+
+### Step 0 — Read project configuration
+
+Read `agent-params.md` from the project root. Extract:
+- **Output language** — all generated documents must be written in this language
+- **Commercial materials sources** — the list of sources to read (local paths, Google Drive folder IDs, Confluence page IDs)
+- **Has integrations** — determines whether the Integration Deep-Dive section is included in the Workshop Guide
+
+If `agent-params.md` is missing or any required field is a placeholder: stop and report.
 
 ### Step 1 — Analyze commercial materials
 
@@ -175,3 +190,5 @@ Items that must be resolved or requested before workshops begin:
 - Session plan must be realistic — do not compress too many areas into one session. Two focused areas with depth beats five areas skimmed.
 - If commercial materials are thin, note explicitly what is unknown and prioritize those areas as open discovery in the first session.
 - If a named stakeholder's role is ambiguous, flag it. The wrong person in a workshop session is costly.
+- **Language:** Generate all output documents (Workshop Guide, session plans, discovery questions) in the language specified in `agent-params.md`. Use the same language the client uses — if the client's materials are in Spanish, write in Spanish.
+- **Integration section:** Include the Integration Deep-Dive section only if `Has integrations: yes` in `agent-params.md`. If integrations are not in scope, omit the section and add a note: "No system integrations are in scope for this project."
