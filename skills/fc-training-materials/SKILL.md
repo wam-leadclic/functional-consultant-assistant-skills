@@ -16,12 +16,17 @@ Training materials determine adoption. Each profile gets only what is relevant t
 
 ## Inputs
 
-- **Functional Document** (Confluence) — defines what each profile does in the system
-- **UAT Plan** (Confluence) — test cases adapted as training exercises
-- **Solution Overview** (Confluence) — process context
-- **List of target profiles** — specific profiles or "all"
+- **Functional Document** (Confluence) — defines what each profile does in the system. Required.
+- **Solution Overview** (Confluence) — process context for each functional area. Required.
+- **UAT Plan** (Confluence) — test cases adapted as training exercises. Optional. If available, test cases are reframed as scenario-based exercises. If not yet available, exercises are generated from the Solution Overview process descriptions instead.
+- **List of target profiles** — specific profiles or "all". Required.
 
 ## Execution Steps
+
+### Step 0 — Read project configuration
+
+Read `agent-params.md` and extract:
+- **Output language** — all training materials must be generated in this language, using the client's own terminology throughout
 
 ### Step 1 — Profile Analysis
 
@@ -96,6 +101,10 @@ If the content does not fit on one page, reduce scope to the three most frequent
 
 #### C. Scenario-Based Exercises — Adapted from UAT test cases
 
+**If UAT Plan is available:** Adapt Happy Path and Alternate Path test cases for this profile as described below.
+
+**If UAT Plan is not yet available:** Generate scenario-based exercises from the TO-BE process steps in the Solution Overview for this profile. Use the same business scenario format — "You receive a call from a customer asking about..." — and end with "What do you do?" and "What does the system show?" Include the expected outcome as described in the process design.
+
 For each Happy Path and Alternate Path test case relevant to this profile:
 
 - Reframe as a business scenario: "You receive a call from a customer asking about..."
@@ -111,6 +120,19 @@ After all profile materials are generated, compile a shared glossary mapping Sal
 
 The glossary is the reference for consistent terminology across all materials. If a term was used differently in two profiles' materials, reconcile it here.
 
+### Step 5 — Regeneration Mode (after scope changes)
+
+Invoked when a Change Log entry has flagged training modules as `Needs Update — CL-[NNN]`.
+
+1. Read the CL entry from the Change Log to understand what changed.
+2. Identify all training documents (User Guides, Quick Reference Cards, Exercises) flagged for this CL-ID.
+3. For each flagged document:
+   - Update only the sections affected by the change. Do not regenerate the entire document.
+   - Add a version note at the top of the updated document: `Updated [date] — CL-[NNN]: [one-line description of change]`
+4. Update the Shared Glossary if the change introduced or modified terminology.
+5. Confirm to the consultant:
+   > "Training materials updated for CL-[NNN]. [N] documents revised across [N] profiles."
+
 ## Writing Rules
 
 - **No Salesforce jargon in user-facing materials.** Never use: object, record, field, lookup, picklist, Opportunity, Lead, Account (unless the client uses that exact term). Use whatever the client calls these things. If unsure, check the Functional Document glossary.
@@ -120,6 +142,7 @@ The glossary is the reference for consistent terminology across all materials. I
 - **Short modules.** If a module exceeds one page, split it into two separate tasks.
 - **Screenshots.** Mark placeholder positions with `[SCREENSHOT: what to show here]`. Do not describe screenshot content in prose — the placeholder is sufficient.
 - **Tone.** Direct and helpful. Write as if explaining to a competent person who is new to this system. No condescension, no over-explanation of obvious steps.
+- **Language:** Write all materials in the language specified in `agent-params.md`. Use the client's own terminology throughout — check the Functional Document glossary for client-specific terms.
 
 ## Publishing
 
