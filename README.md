@@ -216,7 +216,7 @@ Tracks in-scope items, explicit exclusions, and Scope Change Requests (SCRs). Ot
 
 When an SCR is approved and the Functional Document already exists, the scope register automatically triggers `fc-change-log` to register the impact on the signed-off document.
 
-Publishes to Confluence: `2. Solution Design / Scope Register`.
+Publishes to Confluence: `Solution Design / Scope Register`.
 
 ---
 
@@ -233,7 +233,7 @@ A signed-off Functional Document is a contractual artifact. Any modification aft
 
 Four modes: `register-change` · `assess-impact` · `integrate-change` · `list-changes`
 
-Publishes to Confluence: `3. Project Documentation / Change Log`.
+Publishes to Confluence: `Deliverables / Change Log`.
 
 ---
 
@@ -253,7 +253,7 @@ Produces a structured workshop guide with:
 
 All output is generated in the language configured in `agent-params.md`.
 
-Publishes to Confluence: `1. Discovery / Workshop Guide`.
+Publishes to Confluence: `Discovery / Workshop Guide`.
 
 ---
 
@@ -263,14 +263,14 @@ Publishes to Confluence: `1. Discovery / Workshop Guide`.
 
 Reads transcripts, notes, client-provided materials, and system documentation from all configured sources (local, Google Drive, Confluence). Organises the material inventory by document type — not by session number, since workshop agendas often evolve organically.
 
-Extracts functional requirements, business rules, non-functional requirements, user profiles, integration requirements, and reporting needs — all with source traceability. Flags ambiguities, contradictions, and gaps as Open FDRs rather than resolving them silently.
+Extracts functional requirements, business rules, non-functional requirements, user profiles, integration requirements, and reporting needs — all with source traceability. Applies a deliberate threshold before creating FDRs: only genuine conflicts, counter-intuitive decisions, real design blockers, and disputed scope boundaries warrant an FDR. Routine ambiguities and clear defaults are resolved directly in the Solution Overview.
 
 Outputs:
 - **Requirements Register** — every requirement with type, priority (MoSCoW), status, and source
-- **FDRs** — Open records for every unresolved decision or ambiguity
+- **FDRs** — Open records for genuine conflicts, counter-intuitive decisions, and real design blockers only
 - **Integration Map** — functional map of third-party systems: direction, system of record, timing (real-time vs. batch), frequency, and data objects. Strictly functional — no technical implementation patterns.
 
-Publishes to Confluence: `1. Discovery / Requirements Register`, `1. Discovery / FDRs`, `1. Discovery / Integration Map`.
+Publishes to Confluence: `Discovery / Requirements Register`, `Discovery / FDRs`, `Discovery / Integration Map`.
 
 ---
 
@@ -285,13 +285,13 @@ Operates in six sequential phases:
 | A — Pre-design audit | Reviews inputs; counts Open FDRs; flags ambiguous requirements; verifies Must-Have items are in scope |
 | B — FDR resolution | Resolves blocking FDRs one at a time, one question per message |
 | C — Solution design | Designs each functional area across 7 dimensions: feature mapping, TO-BE process, UX per profile, automation needs, data requirements, reporting, and integration touchpoints |
-| D — Critical challenge | Runs a 6-question challenge checklist on every major decision before recording it — surfaces suboptimal designs before they reach UAT |
+| D — Critical challenge | Runs a 6-question challenge checklist on every major decision. Standard/obvious decisions go directly into the Solution Overview; non-obvious ones are recorded as Assumed FDRs; any concern raised stops and waits for deliberate input |
 | E — Security model | Designs OWDs, role hierarchy, profiles vs. permission sets, sharing rules, and flags complex access patterns |
 | F — Integration design | Documents functional integration requirements (direction, trigger, data objects, business criticality, error handling) without specifying technical implementation mechanisms |
 
 Design principles are non-negotiable: standard over custom, declarative over programmatic, restrictive OWD, minimal profiles, no silent assumptions, licensing discipline, 3-year scalability.
 
-Publishes to Confluence: `2. Solution Design / Solution Overview`.
+Publishes to Confluence: `Solution Design / Solution Overview`.
 
 ---
 
@@ -305,7 +305,7 @@ Key sections: executive summary, scope (in/out/assumptions/constraints), stakeho
 
 After sign-off, the recommended next step is `fc-uat-generator`. `fc-architect-handoff` is available as an optional step at any time after sign-off.
 
-Publishes to Confluence: `3. Project Documentation / Functional Document`.
+Publishes to Confluence: `Deliverables / Functional Document`.
 
 ---
 
@@ -321,7 +321,7 @@ Every test case traces to a requirement (REQ-NNN) or FDR plus the FD section. Wr
 
 After scope changes: use `regenerate [CL-ID]` mode to update only the affected test cases.
 
-Publishes to Confluence: `3. Project Documentation / UAT Plan`.
+Publishes to Confluence: `Deliverables / UAT Plan`.
 
 ---
 
@@ -339,7 +339,7 @@ If the UAT Plan is not yet available, exercises are generated from the Solution 
 
 Writing rules are strict: no Salesforce jargon, action-oriented headings, client terminology throughout, profile isolation, and short modules.
 
-Publishes to Confluence: `3. Project Documentation / Training Materials / [Profile Name]`, plus a shared Glossary.
+Publishes to Confluence: `Deliverables / Training Materials / [Profile Name]`, plus a shared Glossary.
 
 ---
 
@@ -353,7 +353,7 @@ Transforms the signed-off Functional Document into a structured, machine-readabl
 
 Does not suggest implementation mechanisms — that is the architect's domain.
 
-Publishes to Confluence: `2. Solution Design / Technical Handoff Package`.
+Publishes to Confluence: `Solution Design / Technical Handoff Package`.
 
 ---
 
@@ -400,16 +400,16 @@ Each project uses this page hierarchy in Confluence:
 
 ```
 [Project Name]
-├── 1. Discovery
+├── Discovery
 │   ├── Workshop Guide
 │   ├── Requirements Register
 │   ├── Integration Map
 │   └── FDRs
-├── 2. Solution Design
+├── Solution Design
 │   ├── Solution Overview
 │   ├── Scope Register
 │   └── Technical Handoff Package  ← only if fc-architect-handoff is invoked
-└── 3. Project Documentation
+└── Deliverables
     ├── Functional Document
     ├── Change Log
     ├── UAT Plan
@@ -422,7 +422,7 @@ The `fc-assistant` creates this structure automatically when starting a new proj
 
 ## Key Concepts
 
-**FDR (Functional Decision Record)** — the primary traceability mechanism. Every design decision, working assumption, or open question is captured as an FDR. No assumption is ever implicit. FDRs include a Revision History field that links post-sign-off changes to their Change Log entry. See `fc-fdr-format` for the full format specification.
+**FDR (Functional Decision Record)** — the primary traceability mechanism. FDRs are created only for genuine decisions requiring human input: conflicting requirements, counter-intuitive design choices, real design blockers, and disputed scope boundaries. Routine decisions and sensible defaults are documented directly in the Solution Overview. FDRs include a Revision History field that links post-sign-off changes to their Change Log entry. See `fc-fdr-format` for the full format specification.
 
 **Scope Register** — the authoritative record of what is and is not included in the project. Managed by `fc-scope-register`, referenced by all other skills. Scope additions without an approved SCR are blocked.
 
