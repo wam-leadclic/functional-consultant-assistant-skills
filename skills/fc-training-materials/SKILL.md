@@ -146,8 +146,8 @@ Invoked when a Change Log entry has flagged training modules as `Needs Update �
 
 ## Publishing
 
-Publish all materials to Confluence under "3. Project Documentation / Training Materials":
+Publish all materials to Confluence under "Deliverables / Training Materials":
 
 - One page per document type per profile: User Guide, Quick Reference, Exercises
-- Shared Glossary at: "3. Project Documentation / Training Materials / Glossary"
+- Shared Glossary at: "Deliverables / Training Materials / Glossary"
 - Name pages consistently: `[Profile] — User Guide`, `[Profile] — Quick Reference`, `[Profile] — Exercises`

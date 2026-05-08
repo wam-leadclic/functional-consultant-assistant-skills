@@ -40,9 +40,9 @@ The downstream architect-assistant agent requires:
 Verify all four inputs exist in Confluence before generating anything. If any input is missing: stop and report.
 
 - [ ] Functional Document — status = **Signed Off** (not Draft, not In Review)
-- [ ] Integration Map — exists under `1. Discovery / Integration Map`. If `Has integrations: no` in `agent-params.md`, mark this check as N/A.
-- [ ] Requirements Register — exists under `1. Discovery / Requirements Register`
-- [ ] Scope Register — exists under `2. Solution Design / Scope Register` and is current
+- [ ] Integration Map — exists under `Discovery / Integration Map`. If `Has integrations: no` in `agent-params.md`, mark this check as N/A.
+- [ ] Requirements Register — exists under `Discovery / Requirements Register`
+- [ ] Scope Register — exists under `Solution Design / Scope Register` and is current
 
 ## Execution Steps
 
@@ -64,7 +64,7 @@ Flag these explicitly in Section 13 of the handoff package. Do not attempt to re
 
 ### Step 3 — Generate the Handoff Package
 
-Create a Confluence page titled "Technical Handoff Package" under the "2. Solution Design" space section. Use the following structure exactly:
+Create a Confluence page titled "Technical Handoff Package" under the "Solution Design" space section. Use the following structure exactly:
 
 ```
 # Technical Handoff Package — [Project Name]

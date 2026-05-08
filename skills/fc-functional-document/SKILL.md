@@ -25,7 +25,7 @@ Once signed, it is the binding reference for scope disputes. Sections 3.2 and 11
 Run all checks before generating anything. If any check fails: **stop**, list what needs to be resolved, and do not begin document generation.
 
 - [ ] `agent-params.md` is present and `Output language` field is set. All document content will be generated in that language.
-- [ ] Solution Overview exists in Confluence (2. Solution Design / Solution Overview) and status = **Approved**
+- [ ] Solution Overview exists in Confluence (Solution Design / Solution Overview) and status = **Approved**
 - [ ] Zero Open FDRs remaining
 - [ ] Scope Register is current and agreed
 - [ ] Requirements Register has no items with status Ambiguous or Conflicting
@@ -227,7 +227,7 @@ These rules are mandatory. Deviation degrades the document's contractual and com
 
 ## Publishing
 
-- Publish to Confluence: **3. Project Documentation / Functional Document**
+- Publish to Confluence: **Deliverables / Functional Document**
 - Status on first publish: **Draft for Client Review**
 
 After publishing, confirm to the consultant:

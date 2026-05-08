@@ -102,21 +102,26 @@ Each requirement gets a unique ID and the following fields:
 
 ### Step 4 — Create Open FDRs
 
-For every ambiguity, contradiction, or gap, create an Open FDR using `fc-fdr-format`.
+Not every ambiguity requires an FDR. Apply the following threshold before creating one.
 
-Create an FDR for each of the following:
+**Create an FDR when:**
 
 | Trigger | Description |
 |---|---|
-| Process ambiguity | A process was described inconsistently across sessions or by different stakeholders |
-| Business rule gap | A rule was implied but the specifics (threshold, condition, exception) were not stated |
-| Conflicting requirements | Two stakeholders described the same process or need differently |
-| Integration uncertainty | A third-party system was confirmed but data exchange details are unclear |
-| Scope boundary | Unclear whether a requirement is in or out of agreed scope |
-| Data ownership | Who owns a record or is responsible for an action was not established |
-| Terminology mismatch | The same concept is referred to by different names across sessions |
+| Conflicting requirements | Two stakeholders explicitly described the same process or need in contradictory ways, and both positions have legitimate business backing |
+| Counter-intuitive design decision | The most reasonable interpretation leads to a design choice that is non-obvious, goes against standard Salesforce practice, or could surprise the client at sign-off |
+| Genuine design blocker | A missing detail (e.g. integration data exchange, approval threshold) means design cannot proceed without an explicit answer — no reasonable default exists |
+| Disputed scope boundary | There is active disagreement across materials about whether something is in or out of scope |
 
-Do not silently resolve any of the above. Every unresolved item must become an FDR.
+**Do NOT create an FDR when:**
+
+- There is a clear, sensible default — apply it and document the choice directly in the Solution Overview. The user will correct if wrong.
+- A process was only mentioned once or unclearly — mark the requirement as **Ambiguous** in the Requirements Register; do not immediately escalate to an FDR.
+- Terminology is inconsistent across sessions — normalize in the Key Data Entities table; no FDR needed.
+- Data ownership can be reasonably inferred from the organizational context described in workshops.
+- An integration detail is unknown but a standard pattern applies — proceed with the standard pattern; note it as an assumption in the Solution Overview.
+
+The goal is a short FDR list that surfaces real decisions requiring human input — not an exhaustive log of every uncertainty encountered during analysis.
 
 ### Step 5 — Build the Integration Map
 
@@ -142,7 +147,7 @@ If any field is unknown, mark as `TBC` and create an Open FDR for that system.
 
 ### Step 6 — Publish to Confluence
 
-Create or update three pages under the project's "1. Discovery" section:
+Create or update three pages under the project's "Discovery" section:
 
 1. **Requirements Register** — full register per the format below
 2. **FDRs (Open and Assumed)** — all FDRs created during this analysis

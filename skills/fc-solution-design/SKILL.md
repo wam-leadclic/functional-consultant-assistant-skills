@@ -24,9 +24,9 @@ Required inputs before starting. Verify each in Confluence.
 
 | Input | Location | Required State |
 |---|---|---|
-| Requirements Register | 1. Discovery / Requirements Register | No Conflicting items unresolved |
-| FDRs | 1. Discovery / FDRs | All Open FDRs reviewed and prioritized |
-| Scope Register | 2. Solution Design / Scope Register | Current and agreed |
+| Requirements Register | Discovery / Requirements Register | No Conflicting items unresolved |
+| FDRs | Discovery / FDRs | All Open FDRs reviewed and prioritized |
+| Scope Register | Solution Design / Scope Register | Current and agreed |
 
 If any pre-condition is missing or not in the required state: **stop**. Report what needs to be resolved before proceeding. Do not begin design work.
 
@@ -164,8 +164,9 @@ Before confirming any major design decision, run the full challenge checklist. D
 - [ ] Is the complexity justified by the business value it delivers?
 
 **Decision rule:**
-- All checks pass → record as FDR **Confirmed** or **Assumed** and proceed.
-- Any check raises a concern → surface the concern explicitly with a recommendation. Do not silently accept a suboptimal design. Wait for a deliberate decision before recording the FDR.
+- All checks pass and the decision is standard or obvious → document directly in the Solution Overview. No FDR needed; the user will correct if wrong.
+- All checks pass but the decision is non-obvious or could surprise the client → record as FDR **Assumed** and surface it for confirmation.
+- Any check raises a concern → surface the concern explicitly with a recommendation. Do not silently accept a suboptimal design. Wait for a deliberate decision before recording the FDR as **Confirmed** or **Assumed**.
 
 Never validate a decision to move faster. Surface the problem now — not during UAT.
 
@@ -255,7 +256,7 @@ For each integration:
 
 ## Output: Solution Overview
 
-Publish to Confluence under **2. Solution Design / Solution Overview**.
+Publish to Confluence under **Solution Design / Solution Overview**.
 
 ```markdown
 # Solution Overview — [Project Name]

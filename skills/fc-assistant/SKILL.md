@@ -110,16 +110,16 @@ When detecting phase, report findings explicitly:
 
 ```
 [Project Name]
-├── 1. Discovery
+├── Discovery
 │   ├── Workshop Guide
 │   ├── Requirements Register
 │   ├── Integration Map
 │   └── FDRs
-├── 2. Solution Design
+├── Solution Design
 │   ├── Solution Overview
 │   ├── Scope Register
 │   └── Technical Handoff Package *(generated only if fc-architect-handoff is invoked)*
-└── 3. Project Documentation
+└── Deliverables
     ├── Functional Document
     ├── Change Log
     ├── UAT Plan

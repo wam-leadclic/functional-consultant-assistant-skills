@@ -21,11 +21,12 @@ An FDR is the audit trail of design reasoning. It exists to make design decision
 
 Create an FDR when:
 
-- A design choice exists where more than one valid option could be taken
-- Something was implied but not explicitly stated in workshops or commercial materials
-- A client statement contradicts another client statement or document
-- A process detail is missing and design cannot proceed without it
-- A scope boundary is unclear
+- A client statement contradicts another client statement or document, and both positions have legitimate business backing
+- A design decision is counter-intuitive, goes against standard Salesforce practice, or could surprise the client at sign-off
+- A process detail is genuinely missing and no reasonable default exists — design cannot proceed without an explicit answer
+- A scope boundary is actively disputed across materials or stakeholders
+
+Do NOT create an FDR when a clear, sensible default or standard pattern applies. In those cases, apply the default and document the choice directly in the Solution Overview. The user will correct if wrong.
 
 ## Individual FDR Entry Format
 

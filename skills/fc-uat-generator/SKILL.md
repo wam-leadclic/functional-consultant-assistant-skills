@@ -95,7 +95,7 @@ Use this format for every test case:
 
 ### Step 4 — Compile UAT Plan
 
-Assemble all test cases into a UAT plan page in Confluence under "3. Project Documentation":
+Assemble all test cases into a UAT plan page in Confluence under "Deliverables":
 
 ```
 # UAT Plan — [Project Name]

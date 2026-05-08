@@ -59,7 +59,7 @@ Do not approve or reject SCRs unilaterally. This requires explicit agreement fro
 
 ### Mode: generate-scope-register
 
-Compile the full Scope Register and publish it to Confluence under "2. Solution Design" > "Scope Register". Include all three tables, a revision history table, and a last-updated timestamp.
+Compile the full Scope Register and publish it to Confluence under "Solution Design" > "Scope Register". Include all three tables, a revision history table, and a last-updated timestamp.
 
 ## Scope Creep Detection Rules
 
@@ -73,7 +73,7 @@ These rules apply to all skills. Any trigger should invoke `check-scope` before 
 
 ## Confluence Output
 
-- **Page location:** "Scope Register" under "2. Solution Design"
+- **Page location:** "Scope Register" under "Solution Design"
 - **Nature:** Living document — updated throughout the engagement, not generated once at the end
 - **Header:** Last-updated date and document version displayed prominently at the top
 - **Revision table:** All changes logged with date, author, and description of what changed

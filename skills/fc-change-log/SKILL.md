@@ -94,7 +94,7 @@ Last updated: [date] | Total changes: [N] | Pending integration: [N]
 [CL entries with Status = Rejected]
 ```
 
-**Page location:** Under `3. Project Documentation / Change Log`
+**Page location:** Under `Deliverables / Change Log`
 
 ---
 
