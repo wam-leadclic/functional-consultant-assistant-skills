@@ -1,11 +1,3 @@
----
-name: fc-training-materials
-description: Generates profile-specific end-user training materials from the Functional Document and UAT results. Produces user guides, quick reference cards, and scenario-based exercises in plain business language. No Salesforce jargon.
-argument-hint: Requires Functional Document (Confluence). Specify target profile(s) or "all profiles". UAT results (if available) are used to generate exercises.
-tools:
-  - Atlassian (Confluence)
----
-
 # Training Materials Generator
 
 Generates profile-specific end-user training materials from the Functional Document and UAT plan. Covers user guides, quick reference cards, and scenario-based exercises. Written for the actual end user — not the consultant.
@@ -25,8 +17,7 @@ Training materials determine adoption. Each profile gets only what is relevant t
 
 ### Step 0 — Read project configuration
 
-Read `agent-params.md` and extract:
-- **Output language** — all training materials must be generated in this language, using the client's own terminology throughout
+Read the output language from the project configuration in the system prompt. All training materials must be generated in this language, using the client's own terminology throughout.
 
 ### Step 1 — Profile Analysis
 
@@ -142,7 +133,7 @@ Invoked when a Change Log entry has flagged training modules as `Needs Update �
 - **Short modules.** If a module exceeds one page, split it into two separate tasks.
 - **Screenshots.** Mark placeholder positions with `[SCREENSHOT: what to show here]`. Do not describe screenshot content in prose — the placeholder is sufficient.
 - **Tone.** Direct and helpful. Write as if explaining to a competent person who is new to this system. No condescension, no over-explanation of obvious steps.
-- **Language:** Write all materials in the language specified in `agent-params.md`. Use the client's own terminology throughout — check the Functional Document glossary for client-specific terms.
+- **Language:** Write all materials in the language specified in the project configuration. Use the client's own terminology throughout — check the Functional Document glossary for client-specific terms.
 
 ## Publishing
 

@@ -1,6 +1,6 @@
 # Functional Consultant Skills
 
-A set of Claude Code skills for WAM Global's AI-powered Salesforce functional consultant. Covers the full engagement lifecycle — from pre-workshop preparation through solution design, formal documentation, UAT, and end-user training.
+A set of skills for WAM Global's AI-powered Salesforce functional consultant, running in **Claude Desktop**. Covers the full engagement lifecycle — from pre-workshop preparation through solution design, formal documentation, UAT, and end-user training.
 
 ---
 
@@ -14,90 +14,48 @@ These skills implement that role as a structured, phase-driven process. Each ski
 
 ## Setup
 
-Complete these steps once on your machine. You will not need to repeat them for future projects.
+Complete these steps once. You will not need to repeat them for future projects.
 
 ---
 
-### Step 1 — Clone this repository
+### Step 1 — Install Claude Desktop
 
-Open the terminal in VSCode (`Terminal → New Terminal`) and run:
+Download and install Claude Desktop from [claude.ai/download](https://claude.ai/download). Sign in with your Anthropic account.
+
+---
+
+### Step 2 — Connect to Atlassian (Confluence)
+
+1. In Claude Desktop, click the **Settings** icon (bottom-left corner)
+2. Go to **Integrations**
+3. Find **Atlassian** and click **Connect**
+4. A browser window will open — log in with your Atlassian account
+
+> If Atlassian does not appear in the Integrations list, contact your Atlassian administrator to confirm that the Rovo MCP integration is enabled for your organisation.
+
+---
+
+### Step 3 — Connect to Google Drive *(optional)*
+
+Only needed if commercial or workshop materials are stored in Google Drive.
+
+1. In Claude Desktop Settings → **Integrations**
+2. Find **Google Drive** and click **Connect**
+3. Authenticate with your Google account when the browser opens
+
+If all your project materials are stored locally in `resources/`, skip this step.
+
+---
+
+### Step 4 — Download this repository
+
+Download this repository as a ZIP from GitHub and unzip it on your computer, or clone it:
 
 ```bash
 git clone https://github.com/wamglobal/functional-consultant-assistant-agent.git
-cd functional-consultant-assistant-agent
 ```
 
----
-
-### Step 2 — Install Node.js
-
-Download and install **Node.js LTS** from [nodejs.org](https://nodejs.org). Accept all defaults during installation.
-
-Verify it installed correctly:
-
-```bash
-node --version
-```
-
-You should see a version number starting with `v18` or higher. If you see an error, restart VSCode and try again.
-
----
-
-### Step 3 — Install Claude Code
-
-```bash
-npm install -g @anthropic-ai/claude-code
-```
-
-Verify:
-
-```bash
-claude --version
-```
-
----
-
-### Step 4 — Connect to Atlassian (Confluence)
-
-First, check whether the Atlassian MCP server is already configured:
-
-```bash
-claude mcp list
-```
-
-If you see `Atlassian` in the list (even with `Needs authentication`), you are done — skip to Step 5. The browser will ask you to log in the first time the assistant uses it.
-
-If `Atlassian` is **not** in the list, run:
-
-```bash
-claude mcp add --transport http atlassian https://mcp.atlassian.com/v1/mcp
-```
-
-> If you see an error mentioning that the Rovo MCP server is not enabled, contact your Atlassian administrator.
-
----
-
-### Step 5 — Connect to Google Drive *(optional — needed if project materials are stored in Drive)*
-
-If your commercial or workshop materials are stored in Google Drive, add the Google Drive MCP:
-
-```bash
-claude mcp add --transport http google-drive https://mcp.google.com/drive
-```
-
-The browser will prompt you to authenticate with your Google account the first time it is used.
-
-If all your project materials are stored locally in `resources/`, you can skip this step.
-
----
-
-### Step 6 — Verify
-
-```bash
-claude mcp list
-```
-
-You should see `atlassian` in the list (and `google-drive` if you completed Step 5).
+This gives you the `skills/` folder and the `resources/` folder structure for storing local materials.
 
 ---
 
@@ -105,52 +63,49 @@ You should see `atlassian` in the list (and `google-drive` if you completed Step
 
 Follow these steps at the beginning of each client engagement.
 
-### 1. Fill in agent-params.md
+---
 
-Open `agent-params.md` in VSCode and replace every `[...]` placeholder with the actual project details:
+### 1. Create a new Project in Claude Desktop
 
-| Field | Where to find it |
-|---|---|
-| Project name | Name of the engagement |
-| Client | Client company name |
-| Output language | ISO 639-1 code — `es` for Spanish, `en` for English, etc. Defaults to `es`. |
-| Has integrations | `yes` if the project involves third-party system integrations; `no` otherwise |
-| Confluence Base URL | `https://yourorg.atlassian.net/wiki` |
-| Confluence Space key | Visible in the Confluence space URL |
-| Project root page ID | In the Confluence page URL: `.../pages/`**123456**`/...` |
+Each client engagement gets its own Project. This keeps all conversations for that engagement together and maintains shared context across sessions.
 
-To add Google Drive or Confluence as material sources, uncomment the relevant entries under `## Commercial materials sources` or `## Workshop materials sources` and fill in the folder/page IDs.
+1. In Claude Desktop, click **+ New Project** in the sidebar
+2. Name it after the client or engagement (e.g. `Acme Corp — Salesforce CRM`)
 
-### 2. Create the resource folders
+---
 
-```bash
-mkdir -p resources/commercial resources/workshops
-```
+### 2. Add the FC assistant to the Project
 
-### 3. Add the commercial materials
+1. Open the Project and click **Edit project instructions**
+2. Copy the full content of `skills/fc-assistant/SKILL.md` and paste it into the custom instructions field
+3. Save
 
-Copy the pre-sales documents (proposals, SOW, RFPs) into `resources/commercial/`. Alternatively, configure a Google Drive folder in `agent-params.md`.
+For phases that require detailed guidance (workshop analysis, solution design, UAT generation), you can additionally paste the relevant skill file into the conversation when entering that phase.
 
-### 4. Start Claude Code
+---
 
-```bash
-claude
-```
+### 3. Start a conversation
 
-Then type:
+Open a new conversation in the Project and type:
 
 ```
-/fc-assistant new project
+new project
 ```
 
-The assistant will read `agent-params.md`, confirm the configuration, create the Confluence page structure, and guide you from there.
+Claude will check whether the project configuration is present. If it is not, it will ask you for the required details (project name, client, Confluence coordinates, language, integrations) and produce a configuration block for you to paste into the Project custom instructions.
+
+---
+
+### 4. Add commercial materials
+
+Place your pre-sales documents (proposals, SOW, RFPs, audit documents) in `resources/commercial/`. Alternatively, drag and drop files directly into the conversation or configure a Google Drive folder when Claude asks.
 
 ---
 
 ## Engagement Lifecycle
 
 ```
-Commercial materials (local, Google Drive, or Confluence)
+Commercial materials (local folder, Google Drive, or Confluence)
         │
         ▼
 [fc-workshop-prep]          Phase 1 — Workshop guide from commercial + client system materials
@@ -187,6 +142,8 @@ Commercial materials (local, Google Drive, or Confluence)
 **Entry point for all engagement work.**
 
 Detects the current project phase by querying Confluence for existing artifacts, proposes the next action, and invokes the appropriate skill. Enforces quality gates (e.g., the Functional Document cannot be generated while Open FDRs exist; UAT cannot start without a signed-off Functional Document). Carries embedded Salesforce expertise — it challenges skipped phases, flags licensing gaps, and surfaces complexity that warrants architect escalation.
+
+If no project configuration is found in the system prompt, fc-assistant enters **Setup Mode**: asks the consultant for all required fields in a single message, then produces a ready-to-paste configuration block with instructions for adding it to the Project custom instructions.
 
 Modes: `new project` · `resume [project name]` · `status` · `scope-change` · direct invocation (`"prepare workshops"`, `"design the solution"`, etc.)
 
@@ -241,7 +198,7 @@ Publishes to Confluence: `Deliverables / Change Log`.
 
 **Phase 1. Generates the workshop guide from commercial materials.**
 
-Reads proposals, SOWs, RFPs, and pre-sales documents from configured sources (local `resources/commercial/`, Google Drive, or Confluence). Also processes client system documentation (ERP manuals, API docs, process diagrams) if found alongside the commercial materials — this directly improves the quality of discovery questions.
+Reads proposals, SOWs, RFPs, and pre-sales documents from configured sources (local `resources/commercial/`, files attached to the conversation, Google Drive, or Confluence). Also processes client system documentation (ERP manuals, API docs, process diagrams) if found alongside the commercial materials — this directly improves the quality of discovery questions.
 
 Produces a structured workshop guide with:
 
@@ -251,7 +208,7 @@ Produces a structured workshop guide with:
 - Documents to request before or during each session
 - An integration investigation agenda (only if integrations are in scope)
 
-All output is generated in the language configured in `agent-params.md`.
+All output is generated in the language specified in the project configuration.
 
 Publishes to Confluence: `Discovery / Workshop Guide`.
 
@@ -261,7 +218,7 @@ Publishes to Confluence: `Discovery / Workshop Guide`.
 
 **Phase 2. Transforms raw workshop output into structured requirements.**
 
-Reads transcripts, notes, client-provided materials, and system documentation from all configured sources (local, Google Drive, Confluence). Organises the material inventory by document type — not by session number, since workshop agendas often evolve organically.
+Reads transcripts, notes, client-provided materials, and system documentation from all configured sources (local `resources/workshops/`, conversation attachments, Google Drive, Confluence). Organises the material inventory by document type — not by session number, since workshop agendas often evolve organically.
 
 Extracts functional requirements, business rules, non-functional requirements, user profiles, integration requirements, and reporting needs — all with source traceability. Applies a deliberate threshold before creating FDRs: only genuine conflicts, counter-intuitive decisions, real design blockers, and disputed scope boundaries warrant an FDR. Routine ambiguities and clear defaults are resolved directly in the Solution Overview.
 
@@ -299,7 +256,7 @@ Publishes to Confluence: `Solution Design / Solution Overview`.
 
 **Phase 4. Generates the formal sign-off document.**
 
-Runs a quality gate before generating anything: Solution Overview must be Approved, zero Open FDRs, Scope Register current, no unresolved ambiguous requirements, and language configured in `agent-params.md`. The document is the contractual reference for the implementation — precise enough for the technical team, clear enough for the client to sign.
+Runs a quality gate before generating anything: Solution Overview must be Approved, zero Open FDRs, Scope Register current, no unresolved ambiguous requirements, and output language specified in the project configuration. The document is the contractual reference for the implementation — precise enough for the technical team, clear enough for the client to sign.
 
 Key sections: executive summary, scope (in/out/assumptions/constraints), stakeholders and profiles, solution by functional area, security model, integrations, data migration, reporting, deliverables, explicit exclusions, and a full decisions log. Every Assumed FDR is listed in Section 3.3 for explicit client review.
 
@@ -313,7 +270,7 @@ Publishes to Confluence: `Deliverables / Functional Document`.
 
 **Phase 4.5. Generates the UAT plan and traceable test cases.**
 
-Run immediately after the Functional Document is signed off — before development begins, not after. Test cases are derived exclusively from the Functional Document and FDRs. No dependency on Jira or GitHub.
+Run immediately after the Functional Document is signed off — before development begins, not after. Test cases are derived exclusively from the Functional Document and FDRs.
 
 First produces a coverage gap analysis (FD sections vs. planned test cases) and waits for confirmation. Then derives edge cases from FDRs (boundary conditions, exception paths, security scenarios). Test cases cover: happy path, alternate paths, negative cases, security checks (one per profile minimum), integration scenarios (success and failure), and FDR edge cases.
 
@@ -363,10 +320,9 @@ Publishes to Confluence: `Solution Design / Technical Handoff Package`.
 functional-consultant-assistant-agent/
 ├── .gitignore
 ├── README.md
-├── CLAUDE.md               Claude Code instructions (not project config)
-├── agent-params.md         Project configuration — fill this in for each engagement
+├── CLAUDE.md               Claude Desktop instructions
 ├── skills/
-│   ├── fc-assistant/               Orchestrator
+│   ├── fc-assistant/               Orchestrator — paste into Project custom instructions
 │   ├── fc-fdr-format/              Utility — FDR format definition
 │   ├── fc-scope-register/          Utility — Scope management
 │   ├── fc-change-log/              Utility — Post-sign-off FD change management
@@ -378,19 +334,11 @@ functional-consultant-assistant-agent/
 │   ├── fc-training-materials/      Phase 6 — Training materials
 │   └── fc-handoff-to-architect/    Optional — Architect AI agent handoff
 └── resources/                      Client materials (gitignored)
-    ├── commercial/
-    └── workshops/
+    ├── commercial/                 Pre-sales materials — read by Claude, never written
+    └── workshops/                  Workshop outputs — read by Claude, never written
 ```
 
-Client materials for each project go in `resources/` at the project root:
-
-```
-resources/
-├── commercial/         Proposals, SOW, RFPs, pre-sales materials
-└── workshops/          Transcripts, notes, client system docs, process diagrams
-```
-
-Alternatively, configure Google Drive or Confluence as material sources in `agent-params.md`.
+Materials for each project go in `resources/` at the project root. Alternatively, share files directly in the conversation or configure Google Drive or Confluence sources when Claude asks during setup.
 
 ---
 
@@ -416,7 +364,7 @@ Each project uses this page hierarchy in Confluence:
     └── Training Materials
 ```
 
-The `fc-assistant` creates this structure automatically when starting a new project.
+The `fc-assistant` creates this structure automatically when starting a new project. Confluence is the single source of truth for all project deliverables — Claude never creates local Markdown files for deliverables.
 
 ---
 
@@ -435,6 +383,6 @@ The `fc-assistant` creates this structure automatically when starting a new proj
 - UAT generation requires a signed-off Functional Document (runs immediately after sign-off, before development)
 - Training phases require a signed-off Functional Document (UAT Plan is optional)
 - Solution Design requires a clean Requirements Register (no unresolved conflicts)
-- If `Has integrations: yes` in agent-params.md, an Integration Map is required before Solution Design begins
+- If integrations are in scope, an Integration Map is required before Solution Design begins
 
-**Architect handoff** — `fc-architect-handoff` (skill name) produces the input package consumed by the `architect-assistant` agent. It is optional — only generate it if the architect-assistant AI agent is being used. The package is optimised for machine reading, not human reading.
+**Architect handoff** — `fc-architect-handoff` produces the input package consumed by the `architect-assistant` agent. It is optional — only generate it if the architect-assistant AI agent is being used. The package is optimised for machine reading, not human reading.

@@ -1,11 +1,3 @@
----
-name: fc-uat-generator
-description: Generates a UAT (User Acceptance Testing) plan with traceable test cases from the signed-off Functional Document. Test cases are derived exclusively from functional requirements and FDRs — no dependency on development tools or repositories. Designed to be executed by business users. Can be regenerated after scope changes.
-argument-hint: Run after Functional Document is signed off. Specify "all" for a full UAT Plan, "regenerate [CL-ID]" to update test cases affected by a specific scope change, or "[functional area]" to generate test cases for one area only.
-tools:
-  - Atlassian
----
-
 # UAT Plan Generator
 
 Generates a complete UAT plan with traceable test cases from the Functional Document. Test cases are written for business users — no technical knowledge assumed.
@@ -155,4 +147,4 @@ Invoked when a scope change has been integrated via fc-change-log and test cases
 - Integration test cases must cover both the success path and the failure path (e.g., integration unavailable, malformed payload).
 - Test steps must be specific enough that a non-technical business user can execute them without guidance. "Verify the system works" is not a valid step. "Verify a new task appears in the user's 'My Tasks' list with status 'Pending'" is valid.
 - Test cases must reference their source: REQ-ID or FDR-ID, and the FD section. Untraceable test cases are not included.
-- **Language:** Generate all test case content in the language specified in `agent-params.md`.
+- **Language:** Generate all test case content in the language specified in the project configuration.

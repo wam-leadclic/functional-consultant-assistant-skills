@@ -1,11 +1,3 @@
----
-name: fc-scope-register
-description: Manages the project scope register. Tracks in-scope items, explicit exclusions, and scope change requests. Invoked by other skills whenever something may affect agreed scope. Primary defense against scope creep.
-argument-hint: Use "add [item] to scope", "exclude [item] from scope", "check scope for [item]", "log scope change request for [item]", or "generate scope register" to publish to Confluence.
-tools:
-  - Atlassian
----
-
 # Scope Register
 
 Scope creep is the primary risk in consulting engagements. This skill is the single source of truth for what is and is not included in the project. Other skills invoke it when they detect a potential scope boundary issue.

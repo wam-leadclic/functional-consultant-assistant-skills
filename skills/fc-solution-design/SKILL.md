@@ -1,11 +1,3 @@
----
-name: fc-solution-design
-description: Designs the Salesforce solution based on Requirements Register and Open FDRs. Resolves ambiguities one question at a time, proposes the solution architecture per functional area (including security model and integrations), and documents every design decision as an FDR. Critical and rigorous — challenges decisions before confirming them.
-argument-hint: Requires Requirements Register and FDRs from fc-workshop-analysis. Iterative — resume across sessions as FDRs are resolved. Use "resume" to continue a previous session.
-tools:
-  - Atlassian
----
-
 # FC Solution Design
 
 Transforms requirements into a concrete Salesforce solution design. Every decision is made explicit, challenged before confirmation, and recorded as an FDR. The consultant is a critical partner — not an order-taker.

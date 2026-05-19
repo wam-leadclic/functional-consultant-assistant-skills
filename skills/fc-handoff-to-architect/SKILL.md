@@ -1,11 +1,3 @@
----
-name: fc-architect-handoff
-description: Optional step. Transforms the approved Functional Document into a structured technical handoff package optimized for consumption by the architect-assistant AI agent. Can be generated at any time after Functional Document sign-off. Produces a self-contained, machine-readable input package — no narrative prose.
-argument-hint: Run after Functional Document is signed off. Optional — only invoke if an architect-assistant agent will be used. Requires Functional Document, Integration Map, Requirements Register, and Scope Register.
-tools:
-  - Atlassian (Confluence)
----
-
 # FC → Architect Handoff
 
 Converts the signed-off Functional Document into a structured technical handoff package. The architect should be able to start the architecture process using only this document — no commercial context, no workshop notes, no re-reading.
@@ -40,7 +32,7 @@ The downstream architect-assistant agent requires:
 Verify all four inputs exist in Confluence before generating anything. If any input is missing: stop and report.
 
 - [ ] Functional Document — status = **Signed Off** (not Draft, not In Review)
-- [ ] Integration Map — exists under `Discovery / Integration Map`. If `Has integrations: no` in `agent-params.md`, mark this check as N/A.
+- [ ] Integration Map — exists under `Discovery / Integration Map`. If `Has integrations: no` in the project configuration, mark this check as N/A.
 - [ ] Requirements Register — exists under `Discovery / Requirements Register`
 - [ ] Scope Register — exists under `Solution Design / Scope Register` and is current
 
