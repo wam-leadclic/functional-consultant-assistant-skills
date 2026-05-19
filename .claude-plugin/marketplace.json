@@ -1,0 +1,16 @@
+{
+  "name": "fc-assistant-marketplace",
+  "description": "WAM Global Salesforce Functional Consultant skills for Claude Desktop",
+  "owner": {
+    "name": "WAM Global",
+    "url": "https://github.com/wam-leadclic"
+  },
+  "plugins": [
+    {
+      "name": "fc-assistant",
+      "description": "Full Salesforce engagement lifecycle: workshop preparation, requirements analysis, solution design, formal documentation, UAT, and end-user training.",
+      "version": "1.0.0",
+      "source": "./"
+    }
+  ]
+}
