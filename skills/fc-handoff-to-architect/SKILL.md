@@ -1,3 +1,10 @@
+---
+name: fc-architect-handoff
+description: Optional step. Transforms the approved Functional Document into a structured technical handoff package optimized for consumption by the architect-assistant AI agent. Can be generated at any time after Functional Document sign-off. Produces a self-contained, machine-readable input package — no narrative prose.
+tools:
+  - Atlassian
+---
+
 # FC → Architect Handoff
 
 Converts the signed-off Functional Document into a structured technical handoff package. The architect should be able to start the architecture process using only this document — no commercial context, no workshop notes, no re-reading.

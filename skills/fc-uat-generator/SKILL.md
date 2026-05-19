@@ -1,3 +1,10 @@
+---
+name: fc-uat-generator
+description: Generates a UAT plan with traceable test cases from the signed-off Functional Document. Test cases are derived exclusively from functional requirements and FDRs. Designed to be executed by business users. Can be regenerated after scope changes.
+tools:
+  - Atlassian
+---
+
 # UAT Plan Generator
 
 Generates a complete UAT plan with traceable test cases from the Functional Document. Test cases are written for business users — no technical knowledge assumed.

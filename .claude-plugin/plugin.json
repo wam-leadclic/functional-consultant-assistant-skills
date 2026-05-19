@@ -1,0 +1,11 @@
+{
+  "name": "fc-assistant",
+  "description": "WAM Global Salesforce Functional Consultant skills. Covers the full engagement lifecycle: workshop preparation, requirements analysis, solution design, formal documentation, UAT, and end-user training.",
+  "version": "1.0.0",
+  "author": {
+    "name": "WAM Global",
+    "url": "https://github.com/wam-leadclic"
+  },
+  "repository": "https://github.com/wam-leadclic/functional-consultant-assistant-skills",
+  "keywords": ["salesforce", "functional-consultant", "consulting", "crm"]
+}

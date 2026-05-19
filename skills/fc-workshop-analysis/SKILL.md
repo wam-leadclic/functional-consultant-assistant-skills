@@ -1,3 +1,11 @@
+---
+name: fc-workshop-analysis
+description: Analyzes all workshop materials (transcripts, documents, process diagrams, client system documentation) to produce a structured Requirements Register, Open FDRs, and Integration Map. Primary analysis step before solution design begins. Can run incrementally after each session or once after all workshops.
+tools:
+  - Atlassian
+  - Google Drive
+---
+
 # fc-workshop-analysis
 
 Transforms raw workshop output into structured, traceable requirements that drive solution design. All requirements must be traceable to their source. This is the primary analysis step before any solution design begins.

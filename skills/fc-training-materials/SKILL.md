@@ -1,3 +1,10 @@
+---
+name: fc-training-materials
+description: Generates profile-specific end-user training materials from the Functional Document and UAT results. Produces user guides, quick reference cards, and scenario-based exercises in plain business language. No Salesforce jargon.
+tools:
+  - Atlassian
+---
+
 # Training Materials Generator
 
 Generates profile-specific end-user training materials from the Functional Document and UAT plan. Covers user guides, quick reference cards, and scenario-based exercises. Written for the actual end user — not the consultant.

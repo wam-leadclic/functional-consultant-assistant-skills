@@ -1,3 +1,10 @@
+---
+name: fc-functional-document
+description: Generates the formal Functional Document from the approved Solution Design. The client-facing, sign-off document that defines the agreed scope and solution. Professional, precise, non-verbose. The contractual reference for the implementation.
+tools:
+  - Atlassian
+---
+
 # FC Functional Document
 
 Generates the formal Functional Document from an approved Solution Overview. This is the client-facing, sign-off document — the contractual reference for the implementation. It must be precise enough for the technical team to build from, and clear enough for the client to understand and sign.

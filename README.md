@@ -24,7 +24,28 @@ Download and install Claude Desktop from [claude.ai/download](https://claude.ai/
 
 ---
 
-### Step 2 — Connect to Atlassian (Confluence)
+### Step 2 — Install the FC Assistant skills
+
+1. In Claude Desktop, open **Settings**
+2. Go to **Skills** in the left panel
+3. Click the **+** button next to **Personal plugins**
+4. In the **Add marketplace** dialog, enter:
+   ```
+   wam-leadclic/functional-consultant-assistant-skills
+   ```
+5. Click **Sync**
+
+This installs all 11 skills at once. You will not need to repeat this for future projects — only when there is a new version to update to.
+
+---
+
+### Updating the skills
+
+To update to a newer version, go to **Settings → Skills**, find the plugin, and click **Sync** again.
+
+---
+
+### Step 3 — Connect to Atlassian (Confluence)
 
 1. In Claude Desktop, click the **Settings** icon (bottom-left corner)
 2. Go to **Integrations**
@@ -35,7 +56,7 @@ Download and install Claude Desktop from [claude.ai/download](https://claude.ai/
 
 ---
 
-### Step 3 — Connect to Google Drive *(optional)*
+### Step 4 — Connect to Google Drive *(optional)*
 
 Only needed if commercial or workshop materials are stored in Google Drive.
 
@@ -47,15 +68,15 @@ If all your project materials are stored locally in `resources/`, skip this step
 
 ---
 
-### Step 4 — Download this repository
+### Step 5 — Download this repository *(optional)*
+
+Only needed if you will store project materials locally in `resources/commercial/` and `resources/workshops/`. If you will always provide materials via Google Drive, Confluence, or file attachments in the conversation, skip this step.
 
 Download this repository as a ZIP from GitHub and unzip it on your computer, or clone it:
 
 ```bash
-git clone https://github.com/wamglobal/functional-consultant-assistant-agent.git
+git clone https://github.com/wam-leadclic/functional-consultant-assistant-skills.git
 ```
-
-This gives you the `skills/` folder and the `resources/` folder structure for storing local materials.
 
 ---
 
@@ -74,17 +95,7 @@ Each client engagement gets its own Project. This keeps all conversations for th
 
 ---
 
-### 2. Add the FC assistant to the Project
-
-1. Open the Project and click **Edit project instructions**
-2. Copy the full content of `skills/fc-assistant/SKILL.md` and paste it into the custom instructions field
-3. Save
-
-For phases that require detailed guidance (workshop analysis, solution design, UAT generation), you can additionally paste the relevant skill file into the conversation when entering that phase.
-
----
-
-### 3. Start a conversation
+### 2. Start a conversation
 
 Open a new conversation in the Project and type:
 
@@ -96,7 +107,7 @@ Claude will check whether the project configuration is present. If it is not, it
 
 ---
 
-### 4. Add commercial materials
+### 3. Add commercial materials
 
 Place your pre-sales documents (proposals, SOW, RFPs, audit documents) in `resources/commercial/`. Alternatively, drag and drop files directly into the conversation or configure a Google Drive folder when Claude asks.
 

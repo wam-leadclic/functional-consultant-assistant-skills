@@ -1,3 +1,10 @@
+---
+name: fc-change-log
+description: Registers and manages changes to the Functional Document after client sign-off. Tracks what changed, impact on UAT test cases and training materials, and produces new document versions. Invoked whenever an approved Scope Change Request requires modifying the signed-off Functional Document.
+tools:
+  - Atlassian
+---
+
 # FC Change Log
 
 Manages all changes to the Functional Document after client sign-off. Every modification to a signed-off document is a contractual event — it must be explicit, traced, and reflected across all downstream artifacts.

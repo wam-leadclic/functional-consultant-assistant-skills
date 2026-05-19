@@ -1,3 +1,11 @@
+---
+name: fc-workshop-prep
+description: Generates a structured workshop guide from commercial materials (proposals, SOW, scope documents). Organizes discovery questions by Salesforce functional area, identifies hypotheses to validate, and surfaces integration touchpoints to investigate.
+tools:
+  - Atlassian
+  - Google Drive
+---
+
 # fc-workshop-prep
 
 Prepares a structured workshop guide before the first client engagement. Reads commercial materials and produces a ready-to-use guide that maximizes session value and ensures the consultant arrives fully prepared.

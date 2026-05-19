@@ -1,3 +1,8 @@
+---
+name: fc-fdr-format
+description: Defines the Functional Decision Record (FDR) format used by all functional consultant skills to track design decisions, client-confirmed requirements, consultant assumptions, and open questions throughout the engagement.
+---
+
 # Functional Decision Record (FDR) Format
 
 A Functional Decision Record captures any design decision, assumption, or open question that arises during the engagement. Every assumption made by the consultant MUST be an FDR — never buried in prose.
