@@ -154,4 +154,4 @@ Invoked when a scope change has been integrated via fc-change-log and test cases
 - Integration test cases must cover both the success path and the failure path (e.g., integration unavailable, malformed payload).
 - Test steps must be specific enough that a non-technical business user can execute them without guidance. "Verify the system works" is not a valid step. "Verify a new task appears in the user's 'My Tasks' list with status 'Pending'" is valid.
 - Test cases must reference their source: REQ-ID or FDR-ID, and the FD section. Untraceable test cases are not included.
-- **Language:** Generate all test case content in the language specified in the project configuration.
+- **Language:** Generate all test case content in the language specified in `agent-params.md`.

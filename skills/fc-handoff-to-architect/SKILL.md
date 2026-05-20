@@ -39,7 +39,7 @@ The downstream architect-assistant agent requires:
 Verify all four inputs exist in Confluence before generating anything. If any input is missing: stop and report.
 
 - [ ] Functional Document — status = **Signed Off** (not Draft, not In Review)
-- [ ] Integration Map — exists under `Discovery / Integration Map`. If `Has integrations: no` in the project configuration, mark this check as N/A.
+- [ ] Integration Map — exists under `Discovery / Integration Map`. If `Has integrations: no` in `agent-params.md`, mark this check as N/A.
 - [ ] Requirements Register — exists under `Discovery / Requirements Register`
 - [ ] Scope Register — exists under `Solution Design / Scope Register` and is current
 

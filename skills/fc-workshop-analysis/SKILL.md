@@ -18,7 +18,7 @@ Can run incrementally after each session (recommended) or once after all worksho
 
 ## Inputs
 
-- **Local:** `resources/workshops/` — transcripts (txt, docx, pdf), session notes, whiteboard photos, client system docs (ERP/PMS manuals, DB schemas, API docs, AS-IS diagrams). Additional sources (Google Drive, Confluence) as configured in the project configuration.
+- **Local:** `resources/workshops/` — transcripts (txt, docx, pdf), session notes, whiteboard photos, client system docs (ERP/PMS manuals, DB schemas, API docs, AS-IS diagrams). Additional sources (Google Drive, Confluence) as configured in `agent-params.md`.
 - **Attachments:** files shared directly in this conversation — same document types.
 - **Scope cross-reference:** `resources/commercial/` or files attached to this conversation — for scope validation.
 - **Workshop Guide** (Confluence) — cross-check planned topics vs. what was actually covered.
@@ -29,7 +29,7 @@ If local folders are not directly accessible, ask the consultant to attach the r
 
 ### Step 0 — Read project configuration
 
-Read the project configuration from the system prompt. Extract:
+Read `agent-params.md`. Extract:
 - **Output language** — all output documents must be in this language
 - **Workshop materials sources** — list of configured sources (local folders, Google Drive, Confluence)
 - **Has integrations** — if `no`, skip Step 5 (Integration Map) and mark it as N/A
@@ -143,7 +143,7 @@ If any field is unknown, mark as `TBC` and create an Open FDR for that system.
 - This is a **functional** map — it describes business behavior, not technical implementation. Do not discuss whether the integration will use a REST API, event bus, middleware, or any other technical mechanism. Those decisions belong to the architect.
 - Exception: if the client has explicitly stated a technical requirement (e.g., "our ERP only supports SFTP file transfer") and this is documented in commercial materials or workshop notes, record it in the Notes column as a **constraint**, not a design recommendation.
 - The System of Record field is mandatory when Direction is Bidirectional. Without it, data ownership conflicts are guaranteed during implementation.
-- If `Has integrations: no` in the project configuration, skip this step entirely and note: "Integration Map not applicable — no system integrations in scope."
+- If `Has integrations: no` in `agent-params.md`, skip this step entirely and note: "Integration Map not applicable — no system integrations in scope."
 
 ### Step 6 — Publish to Confluence
 
@@ -236,4 +236,4 @@ Log each item to the Scope Register with session source.
 - When the client uses inconsistent terminology, log both terms in the Key Data Entities & Terminology table. Never silently normalize terminology — the client's language matters for adoption and training.
 - Out-of-scope items must be logged, not discarded. They inform future phases and protect against scope creep disputes.
 - Do not group unrelated requirements into a single entry to save space. One requirement = one row.
-- **Language:** Generate the Requirements Register, FDR entries, and Integration Map in the language specified in the project configuration.
+- **Language:** Generate the Requirements Register, FDR entries, and Integration Map in the language specified in `agent-params.md`.

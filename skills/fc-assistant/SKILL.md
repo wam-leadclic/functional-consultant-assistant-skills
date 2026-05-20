@@ -18,7 +18,7 @@ Run these checks before any work begins. Do not proceed until all items are reso
 
 ### Step 1 — Read project configuration
 
-Look for a **Project Configuration** block in the system prompt. It should contain the following fields:
+Read `agent-params.md` from the project root. Verify the following fields are filled in (not placeholder values):
 
 | Field | Configuration key | Required for |
 |---|---|---|
@@ -30,7 +30,7 @@ Look for a **Project Configuration** block in the system prompt. It should conta
 | Confluence space key | `Space key` | All phases |
 | Confluence project root page ID | `Project root page ID` | All phases |
 
-**If the configuration block is absent or any required field still contains a placeholder value (`[...]`): enter Setup Mode.**
+**If `agent-params.md` is missing or any required field still contains a placeholder value (`[...]`): enter Setup Mode.**
 
 #### Setup Mode — Interactive configuration
 
@@ -52,31 +52,11 @@ Collect the missing fields by asking the consultant. Ask in a single message, gr
 > **Commercial materials**
 > - How will you provide pre-sales materials? (local `resources/commercial/` folder / attach files here / Google Drive folder ID / Confluence page ID)"
 
-Once all answers are collected, produce a complete, ready-to-paste configuration block:
+Once all answers are collected, write the filled-in configuration to `agent-params.md` in the project root, replacing any placeholder values. Confirm to the consultant:
 
-```
-## Project Configuration
-- **Project name:** [value]
-- **Client:** [value]
-- **Engagement start:** [today's date]
-- **Output language:** [value]
-- **Has integrations:** [yes / no]
-- **Confluence base URL:** [value]
-- **Confluence space key:** [value]
-- **Confluence project root page ID:** [value]
-```
+> "`agent-params.md` saved. You're all set — I'll read it automatically in every future conversation."
 
-Then instruct the consultant:
-
-> "Copy the block above and paste it into this Project's custom instructions:
-> 1. Click the project name in the Claude Desktop sidebar
-> 2. Open **Project Settings** (gear icon)
-> 3. Paste the block at the top of the **Custom Instructions** field
-> 4. Save and start a new conversation
->
-> Once you've done that, come back and tell me 'ready' — I'll pick up from here."
-
-Do not proceed with any engagement work until the configuration is confirmed and present in the system prompt.
+Do not proceed with any engagement work until `agent-params.md` is written and confirmed.
 
 ### Step 2 — Confirm materials availability
 

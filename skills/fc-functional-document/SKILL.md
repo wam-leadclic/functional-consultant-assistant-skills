@@ -23,7 +23,7 @@ Once signed, it is the binding reference for scope disputes. Sections 3.2 and 11
 
 Run all checks before generating anything. If any check fails: **stop**, list what needs to be resolved, and do not begin document generation.
 
-- [ ] Output language is specified in the project configuration. All document content will be generated in that language.
+- [ ] Output language is specified in `agent-params.md`. All document content will be generated in that language.
 - [ ] Solution Overview exists in Confluence (Solution Design / Solution Overview) and status = **Approved**
 - [ ] Zero Open FDRs remaining
 - [ ] Scope Register is current and agreed
@@ -42,7 +42,7 @@ Generate the complete Functional Document using this structure. Every section is
 ```markdown
 # Functional Document — [Project Name]
 Version: 1.0 | Date: [date] | Status: Draft for Client Review
-Prepared by: WAM Global | Client: [Client Name] | Language: [language code from project configuration]
+Prepared by: WAM Global | Client: [Client Name] | Language: [language code from agent-params.md]
 
 ---
 
