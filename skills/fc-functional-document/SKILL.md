@@ -15,7 +15,7 @@ Generates the formal Functional Document from an approved Solution Overview. Thi
 
 The Functional Document is not a requirements dump. It is a designed solution description: what will be built, how it will work, what is explicitly excluded, and what assumptions the project is proceeding on. It is the document a stakeholder signs to authorize implementation.
 
-Once signed, it is the binding reference for scope disputes. Sections 3.2 and 11 (exclusions) are the most legally and commercially significant.
+Once signed, it is the binding reference for scope disputes. Section 3.2 (Out of Scope) is the most legally and commercially significant section in the document.
 
 ---
 
@@ -23,9 +23,9 @@ Once signed, it is the binding reference for scope disputes. Sections 3.2 and 11
 
 Run all checks before generating anything. If any check fails: **stop**, list what needs to be resolved, and do not begin document generation.
 
-- [ ] Output language is specified in `agent-params.md`. All document content will be generated in that language.
+- [ ] Output language confirmed in `agent-params.md`. **Every word of the document** — including section headings, table headers, labels, and sign-off text — must be in that language.
 - [ ] Solution Overview exists in Confluence (Solution Design / Solution Overview) and status = **Approved**
-- [ ] Zero Open FDRs remaining
+- [ ] Zero Open FDRs — all FDRs must be Closed before generation begins
 - [ ] Scope Register is current and agreed
 - [ ] Requirements Register has no items with status Ambiguous or Conflicting
 
@@ -64,16 +64,13 @@ Prepared by: WAM Global | Client: [Client Name] | Language: [language code from 
 [Numbered list of included functional areas and concrete deliverables. Specific — not "CRM implementation" but "Opportunity management for the commercial sales team, including pipeline reporting and sales stage automation."]
 
 ### 3.2 Out of Scope
-[Numbered list of explicitly excluded items, each with a brief reason. This section prevents future disputes — be specific and include items that were discussed and declined, not just items that were never mentioned.]
+[Numbered list of explicitly excluded items, each with a brief reason. Include **both**:
+- Items never included in scope
+- Items that were discussed during workshops or design, evaluated, and explicitly decided against — with the reason
 
-### 3.3 Assumptions
-[Every FDR with status Assumed, listed explicitly. This section requires client review and explicit confirmation before sign-off. If the client disagrees with an assumption, it must be resolved as a new FDR before the project proceeds.]
+This section prevents future disputes. Ambiguity about exclusions causes the most project disputes. Be specific.]
 
-| FDR | Assumption | Consequence if Wrong |
-|---|---|---|
-| FDR-XXX | [Assumption stated precisely] | [What would need to change in the design or scope] |
-
-### 3.4 Constraints
+### 3.3 Constraints
 [Known constraints that affect the solution. Examples: implementation timeline, licensing agreed, third-party system limitations, client IT policies, data residency requirements, support model post-go-live.]
 
 ---
@@ -176,19 +173,14 @@ Prepared by: WAM Global | Client: [Client Name] | Language: [language code from 
 
 ---
 
-## 11. What Is Not Being Built
-[Functionality that was discussed, evaluated, and explicitly decided against — with the reason. This is not a duplicate of 3.2. This section covers items that came up in workshops, were considered, and were rejected. It exists to prevent "but we talked about this" disputes after go-live.]
+## 11. Decisions Log
+| FDR | Decision | Date Closed |
+|---|---|---|
+| FDR-XXX | [Decision description] | [date] |
 
 ---
 
-## 12. Decisions Log
-| FDR | Decision | Status | Date |
-|---|---|---|---|
-| FDR-XXX | [Decision description] | Confirmed / Assumed | [date] |
-
----
-
-## 13. Glossary
+## 12. Glossary
 | Term Used in Document | Plain Language Definition |
 |---|---|
 | | |
@@ -213,11 +205,11 @@ These rules are mandatory. Deviation degrades the document's contractual and com
 
 | Rule | Detail |
 |---|---|
+| Language | Every word — headings, tables, labels, sign-off text — must be in the language from `Output language` in `agent-params.md`. No English defaults. |
 | No verbose | Every sentence carries information. Delete filler. If a sentence can be removed without losing meaning, remove it. |
 | Sections 2–5 | Client-facing. Zero Salesforce jargon. Use the terms the client uses for their own processes, people, and data. |
 | Sections 6–10 | Technical enough for the implementation team. Precision matters more than readability. |
-| Sections 3.2 and 11 | The most important sections in the document. Ambiguity about exclusions causes the most project disputes. Be explicit and specific. When in doubt, add more detail to these sections. |
-| Section 3.3 | Every Assumed FDR must appear here, no exceptions. This is the client's last opportunity to challenge assumptions before development begins. |
+| Section 3.2 | The most important section in the document. Ambiguity about exclusions causes the most project disputes. Include everything that is out of scope — both items never discussed and items explicitly rejected during workshops or design. When in doubt, add more detail. |
 | No design decisions in prose | Every decision is in a table or structured list, traceable to an FDR. Prose paragraphs do not replace structured entries. |
 | Version discipline | Each revision increments the version number. All changes are tracked in Section 1. Never overwrite a version without incrementing. |
 | Completeness | Every section is present. If a section does not apply, it is included with an explicit statement that it is not applicable and why. Blank sections are not acceptable. |

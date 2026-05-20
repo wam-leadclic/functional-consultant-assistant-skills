@@ -18,7 +18,9 @@ Run these checks before any work begins. Do not proceed until all items are reso
 
 ### Step 1 — Read project configuration
 
-Read `agent-params.md` from the project root. Verify the following fields are filled in (not placeholder values):
+Read `agent-params.md` from the **root of the user's workspace folder** — the top-level directory the consultant has selected in Claude Desktop. There is exactly one `agent-params.md` per project; it always lives at the root. Do not search subdirectories. If it is not found at the root, enter Setup Mode.
+
+Verify the following fields are filled in (not placeholder values):
 
 | Field | Configuration key | Required for |
 |---|---|---|
@@ -45,12 +47,12 @@ Collect the missing fields by asking the consultant. Ask in a single message, gr
 > - Does this project involve integrations with other systems? (yes / no)
 >
 > **Confluence**
-> - Your Confluence base URL (e.g. `https://yourcompany.atlassian.net/wiki`):
-> - The Confluence space key for this project (visible in the space URL):
-> - The page ID of the project root page in Confluence (visible in the page URL after `/pages/`):
->
-> **Commercial materials**
-> - How will you provide pre-sales materials? (local `resources/commercial/` folder / attach files here / Google Drive folder ID / Confluence page ID)"
+> - The full URL of the project root page in Confluence (e.g. `https://yourcompany.atlassian.net/wiki/spaces/MYSPACE/pages/123456789/Project+Name`):"
+
+From the root page URL, derive and store the three Confluence fields:
+- **Base URL**: everything up to and including `/wiki`
+- **Space key**: the segment after `/spaces/` and before the next `/`
+- **Project root page ID**: the numeric segment after `/pages/`
 
 Once all answers are collected, write the filled-in configuration to `agent-params.md` in the project root, replacing any placeholder values. Confirm to the consultant:
 
@@ -58,18 +60,7 @@ Once all answers are collected, write the filled-in configuration to `agent-para
 
 Do not proceed with any engagement work until `agent-params.md` is written and confirmed.
 
-### Step 2 — Confirm materials availability
-
-Ask the consultant how materials will be provided for this engagement:
-
-- **Local folders** — files placed in `resources/commercial/` (pre-sales materials) and `resources/workshops/` (workshop outputs) on the consultant's computer. Confirm these folders exist before proceeding.
-- **File attachments** — documents shared directly in this conversation.
-- **Google Drive** — folder IDs configured in the project configuration.
-- **Confluence** — page IDs configured in the project configuration.
-
-At least one source must be available for commercial materials before Phase 1 can begin.
-
-### Step 3 — Detect current phase
+### Step 2 — Detect current phase
 
 Query Confluence using the space key and root page ID from the project configuration to determine which project pages already exist. Use the Phase Detection Logic below.
 
@@ -149,8 +140,7 @@ When detecting phase, report findings explicitly:
 ```
 
 4. Confirm page hierarchy created. Display Confluence links.
-5. Ask: "Do you have commercial materials ready?" (check `resources/commercial/`, files attached to this conversation, and any Google Drive/Confluence sources configured in the project configuration)
-6. If yes → invoke fc-workshop-prep. If no → instruct the consultant to add materials and return.
+5. Invoke fc-workshop-prep. That skill will ask for commercial materials when it needs them.
 
 ---
 
@@ -217,6 +207,12 @@ Do not skip steps. A scope change that bypasses the SCR → CL chain creates a c
 
 ## Cross-cutting Behaviors
 
+### Output Language
+
+All generated content — documents, tables, section headings, labels, notes, and any text the consultant or client will read — must be written in the language specified by `Output language` in `agent-params.md`. This applies to every phase and every skill without exception. If `Output language` is `es`, write in Spanish including headings. Never default to English unless `Output language` is explicitly `en`.
+
+---
+
 ### Confluence as Single Source of Truth
 
 All project deliverables — Workshop Guide, Requirements Register, FDRs, Integration Map, Solution Overview, Scope Register, Technical Handoff Package, Functional Document, Change Log, UAT Plan, Training Materials — are published exclusively to Confluence. Never create local Markdown files for deliverables.
@@ -239,11 +235,10 @@ Do not proceed with design or documentation for out-of-scope items without expli
 
 ### FDR Discipline
 
-Track the FDR summary across all phases. An FDR can be in one of these states: `Open`, `Assumed`, `Confirmed`, `Closed`.
+Track the FDR summary across all phases. An FDR has two states: `Open` (decision pending) or `Closed` (decision taken and documented).
 
-- If more than 5 FDRs are in `Assumed` state without client confirmation: surface this as a risk. Do not wait for the next phase to flag it.
-- If any FDR is `Open` and marked as a design blocker: stop work on the affected area and report it explicitly.
-- Before Phase 4 (Functional Document), all FDRs must be `Confirmed` or `Closed`. `Assumed` FDRs are not acceptable at this gate.
+- If any FDR is `Open`: stop work on the affected design area and report it explicitly. Open FDRs are not passive items — they block the areas they affect.
+- Before Phase 4 (Functional Document), all FDRs must be `Closed`. Zero exceptions.
 
 ### Blocking Conditions
 
@@ -269,7 +264,7 @@ When a blocking condition is detected, report:
 Before invoking fc-functional-document, verify all of the following. If any condition fails, do not proceed.
 
 - [ ] Solution Overview status = `Approved`
-- [ ] Zero FDRs in `Open` or `Assumed` state
+- [ ] Zero Open FDRs
 - [ ] Scope Register is current (reviewed within this phase)
 - [ ] Requirements Register contains no items with status `Ambiguous` or `Conflicting`
 

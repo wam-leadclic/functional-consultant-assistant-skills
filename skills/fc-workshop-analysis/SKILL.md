@@ -29,10 +29,16 @@ If local folders are not directly accessible, ask the consultant to attach the r
 
 ### Step 0 — Read project configuration
 
-Read `agent-params.md`. Extract:
-- **Output language** — all output documents must be in this language
+**Where to find `agent-params.md`:** Read it from the **root of the user's workspace folder** — the top-level directory the consultant has selected in Claude Desktop. There is exactly one `agent-params.md` per project; it always lives at the root. Do not search subdirectories. If it is not found at the root, stop and ask the consultant to confirm its location.
+
+Extract:
+- **Output language** — all output documents must be in this language; all headings and labels must also use this language
+- **Project name** — used in document headers and page titles
 - **Workshop materials sources** — list of configured sources (local folders, Google Drive, Confluence)
-- **Has integrations** — if `no`, skip Step 5 (Integration Map) and mark it as N/A
+- **Space key** and **Project root page ID** — Confluence publish targets
+- **Has integrations** — if `no`, skip Step 5 (Integration Map) entirely and add note: "Integration Map not applicable — no system integrations in scope."
+
+**Skeleton pages already exist:** fc-assistant created `Requirements Register`, `FDRs`, and `Integration Map` pages under the `Discovery` section of the project root in Confluence during Phase 0. Do not create new pages in Step 6 — update those existing skeletons instead.
 
 ### Step 1 — Inventory materials
 
@@ -100,28 +106,39 @@ Each requirement gets a unique ID and the following fields:
 
 **Source format:** `[Session N, ~Xmin]` or `[Doc name, section/page]`
 
-### Step 4 — Create Open FDRs
+### Step 4 — Resolve Ambiguities and Create FDRs
 
-Not every ambiguity requires an FDR. Apply the following threshold before creating one.
+**Ambiguous requirements** and **FDRs are different things.** Handle them separately.
+
+#### Ambiguous requirements
+
+A requirement marked `Ambiguous` (stated only once, unclearly, or by a single stakeholder) does not need an FDR. Resolve it directly:
+
+1. Present the requirement and the two or three possible interpretations to the consultant.
+2. Ask which interpretation is correct — or propose the most reasonable one and ask for confirmation.
+3. Once confirmed, update the requirement status to `Clear` and record the agreed interpretation in the Notes field.
+
+Do not accumulate a backlog of unresolved `Ambiguous` requirements. Resolve them before moving to Step 5.
+
+#### Open FDRs
+
+Create an FDR only when the situation involves a real decision that is complex, counter-intuitive, or contested — not simply missing clarity.
 
 **Create an FDR when:**
 
 | Trigger | Description |
 |---|---|
-| Conflicting requirements | Two stakeholders explicitly described the same process or need in contradictory ways, and both positions have legitimate business backing |
-| Counter-intuitive design decision | The most reasonable interpretation leads to a design choice that is non-obvious, goes against standard Salesforce practice, or could surprise the client at sign-off |
-| Genuine design blocker | A missing detail (e.g. integration data exchange, approval threshold) means design cannot proceed without an explicit answer — no reasonable default exists |
+| Conflicting stakeholder positions | Two stakeholders described the same process in contradictory ways, and both positions have legitimate business backing — a deliberate choice must be made |
+| Counter-intuitive interpretation | The most reasonable interpretation of the materials leads to a design choice that is non-obvious or could surprise the client at sign-off |
+| Genuine design blocker | A critical detail is missing and no reasonable default exists — design cannot proceed without an explicit answer |
 | Disputed scope boundary | There is active disagreement across materials about whether something is in or out of scope |
 
-**Do NOT create an FDR when:**
+**Do not create an FDR when:**
 
-- There is a clear, sensible default — apply it and document the choice directly in the Solution Overview. The user will correct if wrong.
-- A process was only mentioned once or unclearly — mark the requirement as **Ambiguous** in the Requirements Register; do not immediately escalate to an FDR.
-- Terminology is inconsistent across sessions — normalize in the Key Data Entities table; no FDR needed.
-- Data ownership can be reasonably inferred from the organizational context described in workshops.
-- An integration detail is unknown but a standard pattern applies — proceed with the standard pattern; note it as an assumption in the Solution Overview.
-
-The goal is a short FDR list that surfaces real decisions requiring human input — not an exhaustive log of every uncertainty encountered during analysis.
+- A requirement is ambiguous but interpretable → resolve it directly with the consultant (see above)
+- A clear, sensible default exists → apply it; no FDR needed
+- Terminology is inconsistent → normalize in the Key Data Entities table; no FDR needed
+- An integration detail is unknown but a standard pattern applies → note it as an assumption in the Solution Overview
 
 ### Step 5 — Build the Integration Map
 
@@ -147,13 +164,19 @@ If any field is unknown, mark as `TBC` and create an Open FDR for that system.
 
 ### Step 6 — Publish to Confluence
 
-Create or update three pages under the project's "Discovery" section:
+Update the three skeleton pages that fc-assistant created under the `Discovery` section of the project root. **Do not create new pages.** Use CQL to locate each page: `title = "[Page title]" AND ancestor = "[Project root page ID]" AND space = "[Space key]"`.
 
-1. **Requirements Register** — full register per the format below
-2. **FDRs (Open and Assumed)** — all FDRs created during this analysis
-3. **Integration Map** — standalone page with the integration table and per-system detail
+1. **Requirements Register** — update the existing `Requirements Register` skeleton with the full register per the format below
+2. **FDRs** — update the existing `FDRs` skeleton with all FDRs created during this analysis
+3. **Integration Map** — update the existing `Integration Map` skeleton with the integration table and per-system detail (or mark it N/A if `Has integrations: no`)
 
-On incremental runs, update existing pages rather than creating duplicates. Log the sessions analyzed in the header.
+On incremental runs, update these same pages — do not create duplicates. Log the sessions analyzed in the page header.
+
+After publishing all three pages, verify each one:
+- Fetch the page content via the Confluence API and confirm no `[...]` placeholders remain
+- Confirm language of headings matches `Output language` from `agent-params.md`
+- Confirm tables rendered (Requirements Register, Integration Map)
+- Report: "Published and verified: [Requirements Register URL] | [FDRs URL] | [Integration Map URL]"
 
 ---
 
@@ -230,10 +253,10 @@ Log each item to the Scope Register with session source.
 
 - A requirement mentioned once is a candidate — mark **Ambiguous** until corroborated by a second source (another session, a document, or a second stakeholder).
 - A requirement mentioned multiple times across sessions or by multiple stakeholders → mark **Clear**.
-- When client documents contradict workshop statements → Open FDR immediately. Do not silently resolve contradictions.
-- Never invent requirements. If something seems obvious but was not stated → Open FDR to confirm, do not assume.
+- When client documents contradict workshop statements and both positions have legitimate business backing → Open FDR. For simpler contradictions, ask the consultant directly.
+- Never invent requirements. If something seems obvious but was not stated → ask the consultant; do not invent an FDR for it.
 - Source traceability is mandatory for every requirement. `Workshop 2, ~40min mark` is a valid source. A requirement with no source is not a valid requirement.
 - When the client uses inconsistent terminology, log both terms in the Key Data Entities & Terminology table. Never silently normalize terminology — the client's language matters for adoption and training.
 - Out-of-scope items must be logged, not discarded. They inform future phases and protect against scope creep disputes.
 - Do not group unrelated requirements into a single entry to save space. One requirement = one row.
-- **Language:** Generate the Requirements Register, FDR entries, and Integration Map in the language specified in `agent-params.md`.
+- **Language:** Generate all outputs — Requirements Register, FDR entries, Integration Map, and all headings — in the language specified by `Output language` in `agent-params.md`.

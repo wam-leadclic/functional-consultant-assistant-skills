@@ -41,9 +41,9 @@ Six sequential phases. Do not skip or reorder them.
 
 Before designing anything, audit the inputs.
 
-1. **Count Open FDRs.** If more than 5 are design blockers, surface the top blockers and stop until resolved. Do not begin Phase B with an unmanageable blocker queue.
+1. **Count Open FDRs.** List each one. For each Open FDR, identify which functional area it blocks. Do not begin designing a blocked area until its FDR is closed.
 
-2. **Flag ambiguous or conflicting requirements.** Identify every requirement with status Ambiguous or Conflicting. Any that affect design must be resolved before the relevant functional area is designed.
+2. **Resolve remaining Ambiguous requirements.** Identify every requirement with status `Ambiguous` or `Conflicting`. Present each to the consultant and agree on the correct interpretation before the relevant area is designed. Update the Requirements Register accordingly.
 
 3. **Verify Must-Have scope coverage.** Confirm every Must-Have requirement is within the agreed Scope Register. If any Must-Have is out of scope or unconfirmed, stop and escalate before proceeding.
 
@@ -51,26 +51,22 @@ Before designing anything, audit the inputs.
 
 End Phase A with this report:
 
-> "Pre-design audit complete. [N] Open FDRs found, [N] are design blockers. [N] Must-Have requirements confirmed in scope. [N] non-standard requirements flagged for challenge."
+> "Pre-design audit complete. [N] Open FDRs found — [list blocked areas]. [N] Ambiguous requirements pending resolution. [N] Must-Have requirements confirmed in scope. [N] non-standard requirements flagged for challenge."
 
 ---
 
 ### Phase B — FDR Resolution
 
-Resolve each Open FDR that blocks design. Strict protocol:
+Resolve each Open FDR before designing the area it blocks. Strict protocol:
 
-- Present one FDR at a time: its title, context, and the specific answer needed to proceed.
+- Present one FDR at a time: its title, context, and the specific decision needed to proceed.
 - Ask **one focused question**. Stop. Wait for the answer.
-- Record the decision. Transition the FDR to **Confirmed** (explicit stakeholder decision) or **Assumed** (proceeding without full confirmation — must be documented).
+- Once the consultant provides a decision, record it in the FDR Decision field and set Status to **Closed**.
 - Move to the next FDR only after the current one is fully resolved.
 
 **Never bundle multiple questions in one message.**
 
-FDR transitions:
-- **Confirmed**: stakeholder has given a clear, unambiguous answer. Record verbatim.
-- **Assumed**: proceeding based on the consultant's judgment when a definitive answer is unavailable. The assumption is an explicit FDR entry — not a silent decision.
-
-If a blocking FDR cannot be resolved: hold the affected functional area and continue with areas that can be designed. Surface the hold explicitly.
+If a blocking FDR cannot be resolved immediately: hold the affected functional area, continue designing areas that are unblocked, and surface the hold explicitly. Do not proceed with the blocked area under any assumption — an unresolved FDR remains Open until an explicit decision is recorded.
 
 ---
 
@@ -164,8 +160,8 @@ Before confirming any major design decision, run the full challenge checklist. D
 
 **Decision rule:**
 - All checks pass and the decision is standard or obvious → document directly in the Solution Overview. No FDR needed; the user will correct if wrong.
-- All checks pass but the decision is non-obvious or could surprise the client → record as FDR **Assumed** and surface it for confirmation.
-- Any check raises a concern → surface the concern explicitly with a recommendation. Do not silently accept a suboptimal design. Wait for a deliberate decision before recording the FDR as **Confirmed** or **Assumed**.
+- All checks pass but the decision is non-obvious or could surprise the client → create an Open FDR, present it to the consultant, and close it once a deliberate decision is recorded.
+- Any check raises a concern → surface the concern explicitly with a recommendation. Do not silently proceed. Create an Open FDR and wait for an explicit decision before continuing.
 
 Never validate a decision to move faster. Surface the problem now — not during UAT.
 
@@ -234,26 +230,30 @@ Flag any scenario that requires:
 
 ---
 
-### Phase F — Integration Design (Functional Level)
+### Phase F — Integration Map Validation
 
-For each integration in scope, define the functional requirements. Do not specify technical implementation — that is architectural scope.
+The Integration Map produced in Phase 2 (fc-workshop-analysis) is the definitive functional record of all integrations. Do not re-design integrations from scratch here. Phase F validates and completes the Integration Map as part of the solution design.
 
-For each integration:
+**Steps:**
 
-| Dimension | Define |
-|---|---|
-| Direction | Salesforce → External, External → Salesforce, or Bidirectional |
-| Trigger | What event starts the integration (record creation, schedule, user action) |
-| Business objects involved | In business terms — not object API names |
-| Key data points | What data crosses the boundary |
-| Volume and frequency | Records per run, runs per day |
-| Business criticality & error handling requirement | What the business requires when the integration fails (alert, retry, manual fallback). What SLA applies to this integration. Do not specify technical implementation patterns (API, event bus, middleware) — that is architectural scope. |
+1. Read the Integration Map from Confluence (Discovery / Integration Map).
+2. For each integration row, verify:
+   - All `TBC` fields have been resolved during Phase B FDR resolution or can be resolved now
+   - The Dimension 7 (Integration Touchpoints) entries in Phase C align with the Integration Map
+   - No new integration has emerged during Phase C that is not yet captured in the Integration Map
+3. If any field remains `TBC` after Phase B: surface it as an Open FDR and close it before proceeding.
+4. If a new integration was identified during Phase C: add it to the Integration Map and flag it for scope confirmation via fc-scope-register if it was not in the original scope.
+5. Update the Integration Map in Confluence to reflect any changes.
 
-**Integration design rule:** Do not specify or recommend technical implementation mechanisms (REST API, SOAP, event bus, middleware platform, ETL tool, etc.) at this phase. The only exception is when a technical constraint is an explicit client requirement documented in an FDR (e.g., "client ERP only supports SFTP file transfers"). In that case, record it as a constraint, not a recommendation.
+The Integration Map remains in Discovery / Integration Map. The Solution Overview references it — it does not duplicate it.
+
+**Integration rule:** Do not specify or recommend technical implementation mechanisms (REST API, SOAP, event bus, middleware platform, ETL tool, etc.) at any point. The only exception is when a technical constraint is an explicit client requirement documented in an FDR (e.g., "client ERP only supports SFTP file transfers"). In that case, record it as a constraint in the Integration Map Notes column.
 
 ---
 
 ## Output: Solution Overview
+
+> **Language:** Every word of the Solution Overview — headings, tables, labels, and body text — must be written in the language specified by `Output language` in `agent-params.md`.
 
 Publish to Confluence under **Solution Design / Solution Overview**.
 
@@ -336,9 +336,10 @@ Prepared by: WAM Global Functional Consultant
 ---
 
 ## Integration Design
-| System | Direction | Trigger | Business Objects | Recommended Pattern | Constraints |
-|---|---|---|---|---|---|
-| | | | | | |
+
+See Integration Map: [Discovery / Integration Map — Confluence link]
+
+*(The Integration Map is the definitive reference for all integration details. Validated and completed during Phase F.)*
 
 ---
 
@@ -368,7 +369,7 @@ Non-negotiable. Every design decision is evaluated against these.
 | Declarative over programmatic | Flows over Apex. Validation rules over triggers. Configuration before code. |
 | Minimal profiles | One profile per user type. Permission sets for exceptions and additions. No profile proliferation. |
 | Restrictive OWD | Start Private, open deliberately via sharing rules. Never start Public and try to restrict. |
-| No silent assumptions | Every assumption is an FDR with status Assumed. Nothing is assumed without a paper trail. |
+| No silent decisions | Every non-obvious design decision is an FDR. Nothing counter-intuitive proceeds without a paper trail and explicit closure. |
 | Licensing discipline | Never design a feature requiring a license not confirmed in scope. Flag licensing implications explicitly. |
 | 3-year scalability | Design for projected growth, not just current state. Challenge designs that will break at 3× current volume. |
 | Explicit over implicit | If it is not written down, it does not exist. No verbal agreements, no tacit understanding. |

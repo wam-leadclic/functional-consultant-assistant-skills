@@ -24,7 +24,14 @@ Training materials determine adoption. Each profile gets only what is relevant t
 
 ### Step 0 — Read project configuration
 
-Read the output language from `agent-params.md` in the system prompt. All training materials must be generated in this language, using the client's own terminology throughout.
+Read `agent-params.md` from the **root of the user's workspace folder**. There is exactly one `agent-params.md` per project; it always lives at the root. Do not search subdirectories.
+
+Extract:
+- **Output language** — all training materials must be generated in this language, including section headings and labels
+- **Project name** and **Client** — used in document headers
+- **Confluence coordinates** (`Space key`, `Project root page ID`) — publish targets
+
+All training materials are published to the existing `Training Materials` skeleton page in Confluence, under the `Deliverables` section. Do not create local files.
 
 ### Step 1 — Profile Analysis
 

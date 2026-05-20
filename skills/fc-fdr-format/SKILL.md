@@ -1,58 +1,65 @@
 ---
 name: fc-fdr-format
-description: Defines the Functional Decision Record (FDR) format used by all functional consultant skills to track design decisions, client-confirmed requirements, consultant assumptions, and open questions throughout the engagement.
+description: Defines the Functional Decision Record (FDR) format used by all functional consultant skills to document complex or counter-intuitive design decisions throughout the engagement.
 ---
 
 # Functional Decision Record (FDR) Format
 
-A Functional Decision Record captures any design decision, assumption, or open question that arises during the engagement. Every assumption made by the consultant MUST be an FDR — never buried in prose.
+A Functional Decision Record documents a design decision that is complex, counter-intuitive, or significant enough that it could surprise the client or the implementation team if not made explicit. FDRs are the audit trail of non-obvious reasoning — they exist so that every important decision is visible, traceable, and reviewable.
 
 ## What is an FDR
 
-An FDR is the audit trail of design reasoning. It exists to make design decisions visible, traceable, and reviewable — by the client, by WAM Global, and by any consultant who joins the engagement later.
+An FDR is **not** a log of every decision made during the project. It captures decisions that required deliberate judgment — where a reasonable person could have chosen differently, where Salesforce standard practice was consciously set aside, or where a disagreement between stakeholders forced an explicit choice.
+
+**FDRs are not the mechanism for resolving ambiguous requirements.** Ambiguous requirements are handled directly: ask the consultant for clarification or propose a concrete interpretation. Only create an FDR when the decision itself is non-trivial and worth documenting for future reference.
 
 ## Status Values
 
-- **Confirmed** — Explicitly validated with the client (in a workshop, written communication, or sign-off)
-- **Assumed** — Inferred by the consultant as the most reasonable interpretation. Not yet confirmed by the client. Must be surfaced in the Functional Document for client review.
-- **Open** — Unresolved. Requires a decision before the Functional Document can be signed off.
+- **Open** — decision identified but not yet taken. The affected design area is on hold until this FDR is closed.
+- **Closed** — decision taken and documented. The solution proceeds on this basis.
+
+All FDRs must be **Closed** before the Functional Document can be generated or signed.
 
 ## When to Create an FDR
 
 Create an FDR when:
 
-- A client statement contradicts another client statement or document, and both positions have legitimate business backing
-- A design decision is counter-intuitive, goes against standard Salesforce practice, or could surprise the client at sign-off
-- A process detail is genuinely missing and no reasonable default exists — design cannot proceed without an explicit answer
-- A scope boundary is actively disputed across materials or stakeholders
+- A client statement contradicts another client statement or document, and both positions have legitimate business backing — a real decision must be made between them
+- A design choice is counter-intuitive, deviates from standard Salesforce practice, or could surprise the client or the architect at sign-off
+- A scope boundary is actively disputed and requires an explicit decision from both parties
 
-Do NOT create an FDR when a clear, sensible default or standard pattern applies. In those cases, apply the default and document the choice directly in the Solution Overview. The user will correct if wrong.
+Do **not** create an FDR when:
+
+- A requirement is ambiguous → ask the consultant directly or propose a clear interpretation; update the requirement once confirmed
+- A clear, sensible default or standard pattern applies → apply it and document the choice directly in the Solution Overview
+- A detail is simply unknown but a standard assumption is reasonable → proceed and note the assumption in the relevant Solution Overview section
 
 ## Individual FDR Entry Format
 
 ```markdown
 ## FDR-[NNN] — [Short descriptive title]
 
-**Status:** Confirmed | Assumed | Open
-**Date:** YYYY-MM-DD
+**Status:** Open | Closed
+**Date opened:** YYYY-MM-DD
+**Date closed:** YYYY-MM-DD *(only if Status = Closed)*
 **Source:** Workshop [N] | Commercial document | Design discussion | Requirement [REQ-NNN]
 
 ### Context
-[Why this decision was needed. What ambiguity or gap triggered it. 2-4 sentences.]
+[Why this decision was needed. What tension, contradiction, or non-obvious situation triggered it. 2–4 sentences.]
 
 ### Decision
-[The confirmed decision or working assumption. Clear, specific, business language.]
+[The decision taken. Clear, specific, in business language. Only present if Status = Closed.]
 
 ### Consequences
-[What this means for the solution. What alternatives are now ruled out.]
+[What this means for the solution. What alternatives are now ruled out. Only present if Status = Closed.]
 
 ### Pending *(only if Status = Open)*
-[What specific answer is needed. Who needs to provide it.]
+[What specific answer or decision is needed. Who is responsible for providing it.]
 
 ### Revision History *(only if the FDR has been updated after initial creation)*
 | Date | Change | Trigger |
 |---|---|---|
-| [YYYY-MM-DD] | [What changed in Decision, Status, or Consequences] | [CL-ID if triggered by a scope change, or "Design review"] |
+| [YYYY-MM-DD] | [What changed] | [CL-ID if triggered by a scope change, or "Design review"] |
 ```
 
 ## Full FDR Document Structure
@@ -65,34 +72,25 @@ Sources: Requirements Register, Workshop sessions [list], Functional Document v[
 ---
 
 ## Status Summary
-| FDR | Title | Status | Source | Date |
+| FDR | Title | Status | Date Opened | Date Closed |
 |---|---|---|---|---|
 
 ---
 
-## Open FDRs *(resolve before Functional Document sign-off)*
+## Open FDRs *(must be resolved before Functional Document generation)*
 
 [FDR entries with Status = Open]
 
 ---
 
-## Assumed FDRs *(surface to client for confirmation)*
+## Closed FDRs
 
-[FDR entries with Status = Assumed]
-
----
-
-## Confirmed FDRs
-
-[FDR entries with Status = Confirmed]
+[FDR entries with Status = Closed]
 ```
 
 ## Rules
 
 - FDRs are numbered sequentially (FDR-001, FDR-002…) regardless of status changes
-- One decision per FDR — never bundle multiple decisions
-- When an Assumed FDR is confirmed by the client, update status to Confirmed and record the confirmation date and source
-- All Open FDRs must be resolved before the Functional Document is presented for sign-off
-- Every Assumed FDR must appear explicitly in the Functional Document (Section 3.3) so the client can accept or reject the assumption
-- Changing an FDR's Decision requires updating the version and noting what changed
-- When an FDR's Decision or Status changes after the Functional Document has been signed off, add a Revision History entry referencing the CL-ID from the Change Log. This links the FDR change to its contractual justification.
+- One decision per FDR — never bundle multiple decisions into a single entry
+- All Open FDRs must be Closed before the Functional Document is presented for sign-off
+- When an FDR's Decision or Status changes after the Functional Document has been signed off, add a Revision History entry referencing the CL-ID from the Change Log
