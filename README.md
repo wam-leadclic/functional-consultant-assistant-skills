@@ -103,7 +103,7 @@ Open a new conversation in the Project and type:
 new project
 ```
 
-Claude will read `agent-params.md` from the project folder. If it is missing or incomplete, Claude will ask you for the required details (project name, client, Confluence coordinates, language, integrations) and write the file automatically.
+Claude will read `agent-params.md` from the project folder. If it is missing or incomplete, Claude will ask you for the required details (project name, client, Confluence root page URL, language, integrations) and write the file automatically.
 
 ---
 
@@ -154,7 +154,7 @@ Commercial materials (local folder, Google Drive, or Confluence)
 
 Detects the current project phase by querying Confluence for existing artifacts, proposes the next action, and invokes the appropriate skill. Enforces quality gates (e.g., the Functional Document cannot be generated while Open FDRs exist; UAT cannot start without a signed-off Functional Document). Carries embedded Salesforce expertise — it challenges skipped phases, flags licensing gaps, and surfaces complexity that warrants architect escalation.
 
-If no project configuration is found in the system prompt, fc-assistant enters **Setup Mode**: asks the consultant for all required fields in a single message, then produces a ready-to-paste configuration block with instructions for adding it to the Project custom instructions.
+If `agent-params.md` is missing or incomplete, fc-assistant enters **Setup Mode**: asks for project details and the Confluence root page URL (from which it derives the base URL, space key, and page ID automatically), then writes the file directly.
 
 Modes: `new project` · `resume [project name]` · `status` · `scope-change` · direct invocation (`"prepare workshops"`, `"design the solution"`, etc.)
 
@@ -164,15 +164,12 @@ Modes: `new project` · `resume [project name]` · `status` · `scope-change` ·
 
 **Utility. Defines the FDR format used by all other skills.**
 
-A Functional Decision Record (FDR) captures every design decision, working assumption, and unresolved question throughout the engagement. Three statuses:
+A Functional Decision Record (FDR) documents a design decision that is complex, counter-intuitive, or significant enough that it could surprise the client or the implementation team if not made explicit. Two statuses:
 
-- `Confirmed` — explicitly validated with the client
-- `Assumed` — inferred by the consultant; must be surfaced in the Functional Document for client review
-- `Open` — unresolved; blocks Functional Document sign-off
+- `Open` — decision identified but not yet taken; blocks the affected design area
+- `Closed` — decision taken and documented; solution proceeds on this basis
 
-Each FDR includes a Revision History table that logs changes made after the Functional Document has been signed off, linked to the corresponding Change Log entry.
-
-No assumption is ever buried in prose. Every assumption is an FDR.
+FDRs are not used for ambiguous requirements — those are resolved directly by asking the consultant. Each FDR includes a Revision History table that logs changes made after the Functional Document has been signed off, linked to the corresponding Change Log entry.
 
 ---
 
@@ -231,7 +228,7 @@ Publishes to Confluence: `Discovery / Workshop Guide`.
 
 Reads transcripts, notes, client-provided materials, and system documentation from all configured sources (local `resources/workshops/`, conversation attachments, Google Drive, Confluence). Organises the material inventory by document type — not by session number, since workshop agendas often evolve organically.
 
-Extracts functional requirements, business rules, non-functional requirements, user profiles, integration requirements, and reporting needs — all with source traceability. Applies a deliberate threshold before creating FDRs: only genuine conflicts, counter-intuitive decisions, real design blockers, and disputed scope boundaries warrant an FDR. Routine ambiguities and clear defaults are resolved directly in the Solution Overview.
+Extracts functional requirements, business rules, non-functional requirements, user profiles, integration requirements, and reporting needs — all with source traceability. Applies a deliberate threshold before creating FDRs: only genuine conflicts between stakeholders, counter-intuitive decisions, real design blockers, and disputed scope boundaries warrant an FDR. Ambiguous requirements are resolved by asking the consultant directly or proposing an interpretation for confirmation.
 
 Outputs:
 - **Requirements Register** — every requirement with type, priority (MoSCoW), status, and source
@@ -253,11 +250,11 @@ Operates in six sequential phases:
 | A — Pre-design audit | Reviews inputs; counts Open FDRs; flags ambiguous requirements; verifies Must-Have items are in scope |
 | B — FDR resolution | Resolves blocking FDRs one at a time, one question per message |
 | C — Solution design | Designs each functional area across 7 dimensions: feature mapping, TO-BE process, UX per profile, automation needs, data requirements, reporting, and integration touchpoints |
-| D — Critical challenge | Runs a 6-question challenge checklist on every major decision. Standard/obvious decisions go directly into the Solution Overview; non-obvious ones are recorded as Assumed FDRs; any concern raised stops and waits for deliberate input |
+| D — Critical challenge | Runs a 6-question challenge checklist on every major decision. Standard/obvious decisions go directly into the Solution Overview; non-obvious ones are opened as FDRs and closed with an explicit decision |
 | E — Security model | Designs OWDs, role hierarchy, profiles vs. permission sets, sharing rules, and flags complex access patterns |
-| F — Integration design | Documents functional integration requirements (direction, trigger, data objects, business criticality, error handling) without specifying technical implementation mechanisms |
+| F — Integration Map validation | Validates and completes the Integration Map produced in Phase 2; resolves any remaining TBC fields; flags new integrations for scope confirmation |
 
-Design principles are non-negotiable: standard over custom, declarative over programmatic, restrictive OWD, minimal profiles, no silent assumptions, licensing discipline, 3-year scalability.
+Design principles are non-negotiable: standard over custom, declarative over programmatic, restrictive OWD, minimal profiles, no silent decisions, licensing discipline, 3-year scalability.
 
 Publishes to Confluence: `Solution Design / Solution Overview`.
 
@@ -269,7 +266,7 @@ Publishes to Confluence: `Solution Design / Solution Overview`.
 
 Runs a quality gate before generating anything: Solution Overview must be Approved, zero Open FDRs, Scope Register current, no unresolved ambiguous requirements, and output language specified in the project configuration. The document is the contractual reference for the implementation — precise enough for the technical team, clear enough for the client to sign.
 
-Key sections: executive summary, scope (in/out/assumptions/constraints), stakeholders and profiles, solution by functional area, security model, integrations, data migration, reporting, deliverables, explicit exclusions, and a full decisions log. Every Assumed FDR is listed in Section 3.3 for explicit client review.
+Key sections: executive summary, scope (in/out/constraints), stakeholders and profiles, solution by functional area, security model, integrations, data migration, reporting, deliverables, and a full decisions log. The Out of Scope section covers both items never discussed and items explicitly evaluated and rejected during workshops or design.
 
 After sign-off, the recommended next step is `fc-uat-generator`. `fc-architect-handoff` is available as an optional step at any time after sign-off.
 
@@ -381,7 +378,7 @@ The `fc-assistant` creates this structure automatically when starting a new proj
 
 ## Key Concepts
 
-**FDR (Functional Decision Record)** — the primary traceability mechanism. FDRs are created only for genuine decisions requiring human input: conflicting requirements, counter-intuitive design choices, real design blockers, and disputed scope boundaries. Routine decisions and sensible defaults are documented directly in the Solution Overview. FDRs include a Revision History field that links post-sign-off changes to their Change Log entry. See `fc-fdr-format` for the full format specification.
+**FDR (Functional Decision Record)** — documents complex or counter-intuitive design decisions that could surprise the client or architect if not made explicit. Two states: `Open` (blocks the affected area) and `Closed` (decision recorded). All FDRs must be Closed before the Functional Document can be generated. Routine decisions and clear defaults are documented directly in the Solution Overview without an FDR. Each FDR includes a Revision History field that links post-sign-off changes to their Change Log entry. See `fc-fdr-format` for the full format specification.
 
 **Scope Register** — the authoritative record of what is and is not included in the project. Managed by `fc-scope-register`, referenced by all other skills. Scope additions without an approved SCR are blocked.
 
