@@ -103,7 +103,7 @@ Open a new conversation in the Project and type:
 new project
 ```
 
-Claude will check whether the project configuration is present. If it is not, it will ask you for the required details (project name, client, Confluence coordinates, language, integrations) and produce a configuration block for you to paste into the Project custom instructions.
+Claude will read `agent-params.md` from the project folder. If it is missing or incomplete, Claude will ask you for the required details (project name, client, Confluence coordinates, language, integrations) and write the file automatically.
 
 ---
 
