@@ -199,6 +199,65 @@ By signing this document, both parties confirm agreement with the scope, solutio
 
 ---
 
+## Diagrams Protocol
+
+Apply at two specific points during document generation. Thresholds are higher than in `fc-solution-design` — contractual text precision takes precedence in this document.
+
+In all cases, wait for consultant confirmation before invoking `fc-lucidchart`.
+
+### Trigger 1 — Section 5.X.2 (Solution per functional area)
+
+After writing the solution description for each functional area, evaluate:
+- Does the process have 6 or more steps? **OR**
+- Are there branching paths relevant to the client's understanding?
+
+If either condition is true, propose:
+
+> "La descripción del proceso de [Área] es extensa. Un diagrama de flujo puede ayudar al cliente a validar que lo ha entendido correctamente antes de firmar. ¿Lo incluyo?"
+
+If the consultant confirms, invoke `fc-lucidchart` with:
+
+```
+Type: process-flow
+Title: Proceso — [Área]
+Context: [the solution steps already written for this area]
+Target Confluence page: [Functional Document page URL]
+Target section: 5.[X] [Área] → 5.[X].2 Solución
+```
+
+### Trigger 2 — Section 6.3 (Role Hierarchy)
+
+After writing the role hierarchy, evaluate:
+- Does the hierarchy have more than 2 levels?
+
+If true, propose:
+
+> "La jerarquía de roles tiene [N niveles]. ¿Creo un diagrama visual en Lucid Chart para incluirlo en el documento?"
+
+If the consultant confirms, invoke `fc-lucidchart` with:
+
+```
+Type: role-hierarchy
+Title: Jerarquía de Roles — [Project Name]
+Context: [the text tree already written in Section 6.3]
+Target Confluence page: [Functional Document page URL]
+Target section: 6.3 Jerarquía de Roles
+```
+
+### Explicit trigger
+
+If the consultant requests a diagram at any point during execution of this skill, invoke `fc-lucidchart` with the relevant type and context. Do not apply threshold conditions.
+
+### Restriction
+
+Do not propose diagrams for architecture, data model, or integrations under any circumstance. The Functional Document contains no technical diagrams.
+
+### Placement rule
+
+The diagram embed is inserted immediately after the corresponding section content in Confluence. Text is never replaced.
+
+---
+
 ## Writing Rules
 
 These rules are mandatory. Deviation degrades the document's contractual and communicative value.
