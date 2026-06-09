@@ -303,6 +303,7 @@ The fc-assistant knows all skills in the system and their roles.
 | fc-fdr-format | Utility | Defines the FDR format. Not invoked directly — reference for all other skills. |
 | fc-scope-register | Utility | Manages the Scope Register. Invoked whenever scope may be affected. |
 | fc-change-log | Utility | Registers and manages changes to the Functional Document post-sign-off. |
+| fc-lucidchart | Utility | Creates diagrams in Lucid Chart and embeds them in Confluence. Invoked by fc-solution-design and fc-functional-document when a diagram adds significant value for the reader. |
 | fc-workshop-prep | Phase 1 | Generates workshop guide from commercial and client materials. |
 | fc-workshop-analysis | Phase 2 | Analyzes workshop materials; produces Requirements Register, FDRs, and Integration Map. |
 | fc-solution-design | Phase 3 | Designs the Salesforce solution; resolves FDRs. |

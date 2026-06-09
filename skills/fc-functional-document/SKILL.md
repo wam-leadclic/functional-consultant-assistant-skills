@@ -246,7 +246,7 @@ Target section: 6.3 Jerarquía de Roles
 
 ### Explicit trigger
 
-If the consultant requests a diagram at any point during execution of this skill, invoke `fc-lucidchart` with the relevant type and context. Do not apply threshold conditions.
+If the consultant requests a diagram at any point during execution of this skill, invoke `fc-lucidchart` with the relevant type and context. Do not apply threshold conditions. Use `Type: other` for any diagram that does not fall into `process-flow` or `role-hierarchy`.
 
 ### Restriction
 
