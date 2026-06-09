@@ -48,13 +48,20 @@ Create a new Lucid Chart document using the Title and Context provided. Build th
 - For `role-hierarchy`: org chart reflecting the hierarchy levels and role names from Context. Each role on its own node, parent-child relationships as connecting lines.
 - For `other`: most appropriate diagram type for the described content.
 
+If Lucid tool authentication fails or diagram creation returns an error, halt and report to the calling skill:
+> "No se ha podido crear el diagrama '[Title]' en Lucid Chart. Error: [error description]. La sección correspondiente en Confluence no ha sido modificada."
+
 ### Step 4 — Embed in Confluence
 
 Insert the Lucid embed macro into the target section of the target Confluence page, immediately after the corresponding text content. Use the official Lucid Confluence macro. The embed must not replace the existing text.
 
+If the target section is not found on the Confluence page, halt and report to the calling skill:
+> "Sección '[Target section]' no encontrada en la página de Confluence. El diagrama no ha sido insertado."
+Do not create the section or append to the end of the page.
+
 ### Step 5 — Confirm to calling skill
 
-> "Diagrama '[Title]' creado en Lucid Chart e integrado en '[Target section]' de [page title]."
+> "Diagrama '[Title]' creado en Lucid Chart e integrado en '[Target section]' de [Target Confluence page]."
 
 ---
 
