@@ -251,6 +251,59 @@ The Integration Map remains in Discovery / Integration Map. The Solution Overvie
 
 ---
 
+## Diagrams Protocol
+
+Apply at two specific points during execution. In all cases, wait for consultant confirmation before invoking `fc-lucidchart`.
+
+### Trigger 1 — Phase C, Dimension 2 (Process Design TO-BE)
+
+After writing the numbered TO-BE steps for each functional area, evaluate:
+- Does the flow have 5 or more steps? **OR**
+- Does it contain at least one decision point (branching path)?
+
+If either condition is true, propose:
+
+> "El flujo TO-BE de [Área] tiene [N pasos / bifurcaciones]. Un diagrama de proceso facilitaría la revisión del cliente. ¿Lo creo en Lucid Chart y lo embedo en la sección?"
+
+If the consultant confirms, invoke `fc-lucidchart` with:
+
+```
+Type: process-flow
+Title: Flujo TO-BE — [Área]
+Context: [the numbered steps already written, including decision points]
+Target Confluence page: [Solution Overview page URL]
+Target section: [Área] → Process Design (TO-BE)
+```
+
+### Trigger 2 — Phase E (Security Model, Role Hierarchy)
+
+After designing the role hierarchy, evaluate:
+- Does the hierarchy have more than 2 levels?
+
+If true, propose:
+
+> "La jerarquía de roles tiene [N niveles]. ¿Creo un diagrama visual en Lucid Chart para incluirlo en el Solution Overview?"
+
+If the consultant confirms, invoke `fc-lucidchart` with:
+
+```
+Type: role-hierarchy
+Title: Jerarquía de Roles — [Project Name]
+Context: [the text tree already written]
+Target Confluence page: [Solution Overview page URL]
+Target section: Security Model → Role Hierarchy
+```
+
+### Explicit trigger
+
+If the consultant requests a diagram at any point during execution of this skill, invoke `fc-lucidchart` with the relevant type and context. Do not apply threshold conditions.
+
+### Placement rule
+
+The diagram embed is always inserted immediately after the corresponding textual content in Confluence. It never replaces text.
+
+---
+
 ## Output: Solution Overview
 
 > **Language:** Every word of the Solution Overview — headings, tables, labels, and body text — must be written in the language specified by `Output language` in `agent-params.md`.
