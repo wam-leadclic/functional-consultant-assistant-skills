@@ -13,3 +13,6 @@ resources/
 # Editor
 .vscode/
 .idea/
+
+# Git worktrees
+.worktrees/
