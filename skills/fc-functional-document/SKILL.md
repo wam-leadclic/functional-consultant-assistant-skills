@@ -213,16 +213,16 @@ After writing the solution description for each functional area, evaluate:
 
 If either condition is true, propose:
 
-> "La descripción del proceso de [Área] es extensa. Un diagrama de flujo puede ayudar al cliente a validar que lo ha entendido correctamente antes de firmar. ¿Lo incluyo?"
+> "The process description for [Area] is extensive. A flow diagram can help the client confirm they have understood it correctly before signing. Shall I include one?"
 
 If the consultant confirms, invoke `fc-lucidchart` with:
 
 ```
 Type: process-flow
-Title: Proceso — [Área]
+Title: Process — [Area]
 Context: [the solution steps already written for this area]
 Target Confluence page: [Functional Document page URL]
-Target section: 5.[X] [Área] → 5.[X].2 Solución
+Target section: 5.[X] [Area] → 5.[X].2 Solution
 ```
 
 ### Trigger 2 — Section 6.3 (Role Hierarchy)
@@ -232,16 +232,16 @@ After writing the role hierarchy, evaluate:
 
 If true, propose:
 
-> "La jerarquía de roles tiene [N niveles]. ¿Creo un diagrama visual en Lucid Chart para incluirlo en el documento?"
+> "The role hierarchy has [N levels]. Shall I create a visual diagram in Lucid Chart and include it in the document?"
 
 If the consultant confirms, invoke `fc-lucidchart` with:
 
 ```
 Type: role-hierarchy
-Title: Jerarquía de Roles — [Project Name]
+Title: Role Hierarchy — [Project Name]
 Context: [the text tree already written in Section 6.3]
 Target Confluence page: [Functional Document page URL]
-Target section: 6.3 Jerarquía de Roles
+Target section: 6.3 Role Hierarchy
 ```
 
 ### Explicit trigger

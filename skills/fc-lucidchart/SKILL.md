@@ -34,7 +34,7 @@ Check the Type parameter:
 - If `process-flow`: proceed.
 - If `role-hierarchy`: proceed.
 - If `other`: read the Context. If it describes an architecture diagram, data model, integration topology, or any technical system diagram: **reject** the request with:
-  > "Este tipo de diagrama (arquitectura / modelo de datos / topología de integración) está fuera del alcance de fc-lucidchart y no debe incluirse en la documentación funcional."
+  > "This diagram type (architecture / data model / integration topology) is outside the scope of fc-lucidchart and must not be included in functional documentation."
 
 ### Step 2 — Authenticate with Lucid
 
@@ -49,19 +49,19 @@ Create a new Lucid Chart document using the Title and Context provided. Build th
 - For `other`: most appropriate diagram type for the described content.
 
 If Lucid tool authentication fails or diagram creation returns an error, halt and report to the calling skill:
-> "No se ha podido crear el diagrama '[Title]' en Lucid Chart. Error: [error description]. La sección correspondiente en Confluence no ha sido modificada."
+> "Failed to create diagram '[Title]' in Lucid Chart. Error: [error description]. The corresponding Confluence section has not been modified."
 
 ### Step 4 — Embed in Confluence
 
 Insert the Lucid embed macro into the target section of the target Confluence page, immediately after the corresponding text content. Use the official Lucid Confluence macro. The embed must not replace the existing text.
 
 If the target section is not found on the Confluence page, halt and report to the calling skill:
-> "Sección '[Target section]' no encontrada en la página de Confluence. El diagrama no ha sido insertado."
+> "Section '[Target section]' not found on the Confluence page. The diagram has not been inserted."
 Do not create the section or append to the end of the page.
 
 ### Step 5 — Confirm to calling skill
 
-> "Diagrama '[Title]' creado en Lucid Chart e integrado en '[Target section]' de [Target Confluence page]."
+> "Diagram '[Title]' created in Lucid Chart and embedded in '[Target section]' of [Target Confluence page]."
 
 ---
 

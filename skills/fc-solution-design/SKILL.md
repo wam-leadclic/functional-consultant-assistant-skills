@@ -263,16 +263,16 @@ After writing the numbered TO-BE steps for each functional area, evaluate:
 
 If either condition is true, propose:
 
-> "El flujo TO-BE de [Área] tiene [N pasos / bifurcaciones]. Un diagrama de proceso facilitaría la revisión del cliente. ¿Lo creo en Lucid Chart y lo embedo en la sección?"
+> "The TO-BE flow for [Area] has [N steps / decision points]. A process diagram would help the client review it. Shall I create one in Lucid Chart and embed it in this section?"
 
 If the consultant confirms, invoke `fc-lucidchart` with:
 
 ```
 Type: process-flow
-Title: Flujo TO-BE — [Área]
+Title: TO-BE Flow — [Area]
 Context: [the numbered steps already written, including decision points]
 Target Confluence page: [Solution Overview page URL]
-Target section: [Área] → Process Design (TO-BE)
+Target section: [Area] → Process Design (TO-BE)
 ```
 
 ### Trigger 2 — Phase E (Security Model, Role Hierarchy)
@@ -282,13 +282,13 @@ After designing the role hierarchy, evaluate:
 
 If true, propose:
 
-> "La jerarquía de roles tiene [N niveles]. ¿Creo un diagrama visual en Lucid Chart para incluirlo en el Solution Overview?"
+> "The role hierarchy has [N levels]. Shall I create a visual diagram in Lucid Chart and include it in the Solution Overview?"
 
 If the consultant confirms, invoke `fc-lucidchart` with:
 
 ```
 Type: role-hierarchy
-Title: Jerarquía de Roles — [Project Name]
+Title: Role Hierarchy — [Project Name]
 Context: [the text tree already written]
 Target Confluence page: [Solution Overview page URL]
 Target section: Security Model → Role Hierarchy
